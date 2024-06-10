@@ -21,7 +21,7 @@
                     <?php
                     $id = $_GET['id'];
                     if (isset($_POST['submit'])) {
-                        $nama_aset = $_POST['nama_aset'];
+                        $nama_barang = $_POST['nama_barang'];
                         $jumlah = $_POST['jumlah'];
                         $tanggal = $_POST['tanggal'];
                         $kondisi = $_POST['kondisi'];
@@ -43,28 +43,23 @@
                             $foto = addslashes($foto);
                             fclose($fp);
 
-                            $query = mysqli_query($koneksi, "UPDATE aset_sekolah SET nama_aset='$nama_aset', jumlah='$jumlah', tanggal='$tanggal', kondisi='$kondisi', lokasi='$lokasi', foto='$foto' WHERE id_aset=$id");
+                            $query = mysqli_query($koneksi, "UPDATE barang SET nama_barang='$nama_barang', jumlah='$jumlah', tanggal='$tanggal', kondisi='$kondisi', lokasi='$lokasi', foto='$foto' WHERE id_barang=$id");
 
                             if ($query) {
-                                echo '<script>alert("Data aset Berhasil di Ubah."); location.href="?page=aset_sekolah"</script>';
+                                echo '<script>alert("Data aset Berhasil di Ubah."); location.href="?page=total_barang"</script>';
                             } else {
                                 echo '<script>alert("Gagal Mengubah data.");</script>';
                             }
                         }
                     }
-                    $query = mysqli_query($koneksi, "SELECT * FROM aset_sekolah WHERE id_aset=$id");
+                    $query = mysqli_query($koneksi, "SELECT * FROM barang WHERE id_barang=$id");
                     $data = mysqli_fetch_array($query);
                     ?>
+                    
                     <div class="form-group row">
-                        <label for="kd_aset" class="col-sm-2 col-form-label">Kode Aset</label>
+                        <label for="nama_barang" class="col-sm-2 col-form-label">Nama Barang</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="kd_aset" value="<?php echo $data['kd_aset'] ?>">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="nama_aset" class="col-sm-2 col-form-label">Nama Aset</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" name="nama_aset" value="<?php echo $data['nama_aset'] ?>">
+                            <input type="text" class="form-control" name="nama_barang" value="<?php echo $data['nama_barang'] ?>">
                         </div>
                     </div>
                     <div class="form-group row">
@@ -107,7 +102,7 @@
                     <div class="form-group row">
                         <div class="col-sm-10 offset-sm-2">
                             <button type="submit" name="submit" class="btn btn-primary">Simpan</button>
-                            <a href="?page=aset_sekolah" class="btn btn-danger">Kembali</a>
+                            <a href="?page=barang" class="btn btn-danger">Kembali</a>
                         </div>
                     </div>
                 </form>
