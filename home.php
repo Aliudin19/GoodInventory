@@ -9,7 +9,9 @@ require 'vendor/autoload.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Navbar with Login</title>
+    <title>INVENTARIS SEKOLAH</title>
+    <!-- Favicon -->
+    <link rel="icon" href="img/logo.png" type="image/png">
     <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -53,84 +55,25 @@ require 'vendor/autoload.php';
             /* Atur jarak antara setiap kategori */
         }
 
-        .garis-pembatas {
-            border-top: 1px solid #ccc;
-            /* Atur garis pembatas */
-            margin: 10px auto;
-            /* Atur jarak dari atas dan bawah */
-            width: 80%;
-            /* Atur lebar garis pembatas */
-        }
-
-        .dashboard-container {
-            background: #fff;
-            border-radius: 15px;
-            padding: 20px;
-            border: 2px solid #fff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            /* Memposisikan elemen ke tengah secara vertikal */
-            /* Menambahkan jarak antara dashboard dan card */
-        }
-
-        .dashboard-title {
-            font-size: 38px;
-            font-weight: bold;
-            color: #fff;
-            text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
-            margin-bottom: 20px;
-        }
-
-        .dashboard-text {
-            color: #333;
-            font-size: 19px;
-            margin-bottom: 20px;
-        }
-
-        .dashboard-text p {
-            margin-bottom: 10px;
-        }
-
-        /* Tambahkan CSS untuk mengatur gambar di samping kiri */
-
-        .dashboard-image {
-            margin-right: 20px;
-            /* Jarak antara gambar dan teks */
-        }
-
-        .dashboard-content {
-            flex-grow: 1;
-            /* Memungkinkan konten untuk mengisi ruang yang tersedia */
-        }
-
-
-
         .card {
-            background-color: #fff;
-            border-radius: 15px;
+            color: black;
+            background-color: 		#F5F5DC;
+            border-radius: 10px;
             transition: transform 0.3s ease;
             margin-bottom: 20px;
             /* Menambahkan jarak antara card aset */
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
         }
 
         .card-body {
             padding: 20px;
         }
 
-        /* ... CSS sebelumnya ... */
-
         .card-title {
-            font-size: 40px;
+            font-size: 15px;
             font-weight: bold;
             color: rgba(0, 0, 0, 0.8);
             /* Biru Muda */
-            margin-bottom: 30px;
+            margin-bottom: 6px;
         }
 
         .card-info {
@@ -146,76 +89,50 @@ require 'vendor/autoload.php';
             color: #ffc107;
             /* Oranye */
         }
-
-        /* Tambahkan warna untuk garis pembatas */
-        .garis-pembatas {
-            border-top: 1px solid #007bff;
-            /* Biru Muda */
-            margin: 10px auto;
-            width: 80%;
+        .card-img {
+            position: center;
         }
+
+        
 
         .card-custom {
-            height: 250px;
-            /* Adjust height as needed */
+            margin: 0 auto;
+            float: none;
+            margin-bottom: 20px;
         }
 
-        .card-custom .card-body,
-        .card-custom .card-footer {
-            padding: 10px;
-            /* Adjust padding as needed */
+        .card-body-table {
+            margin-top: 20px;
         }
 
-        .card-custom .card-title {
-            font-size: 1rem;
-            /* Adjust font size as needed */
+        .table {
+            width: 100%;
         }
 
-        .card-custom img {
-            height: 100px;
-            /* Adjust height as needed */
-            object-fit: cover;
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
-        .card-custom .card-text {
-            font-size: 0.875rem;
-            /* Adjust font size as needed */
+        .row {
+            width: 100%;
         }
 
-        .card-custom {
-            height: 325px;
-            /* Adjust height as needed */
+        .centered-img {
+            width: 100%;
+            height: auto;
+            display: block;
         }
-
-        .card-custom .card-body,
-        .card-custom .card-footer {
-            padding: 10px;
-            /* Adjust padding as needed */
-        }
-
-        .card-custom .card-title {
-            font-size: 1.5rem;
-            /* Adjust font size as needed */
-        }
-
-        .card-custom img {
-            height: 170px;
-            /* Adjust height as needed */
-            object-fit: cover;
-        }
-
-        .card-custom .card-text {
-            font-size: 0.950rem;
-            /* Adjust font size as needed */
-        }
-
-         </style>
+    </style>
 </head>
 
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand">
             <img src="./img/logo.png" alt="Logo">
             Inventory
         </a>
@@ -233,7 +150,6 @@ require 'vendor/autoload.php';
                 <li class="nav-item">
                     <a class="nav-link" href="kategori_barang.php">Daftar Kategori</a>
                 </li>
-
             </ul>
             <button class="login-btn" onclick="window.location.href='login.php'">Login</button>
         </div>
@@ -241,9 +157,9 @@ require 'vendor/autoload.php';
 
     <div class="container mt-1">
         <div class="row">
-            <div class="col-xl-6">
+            <div class="col-xl-6 mx-auto">
                 <div class="card card-custom">
-                    <img class="card-img-top img-fluid centered-img" src="images/card/fatahillahBG.jpeg" alt="Card image cap">
+                    <img class="card-img-top centered-img" src="images/card/fatahillahBG.jpeg" alt="Card image cap">
                     <div class="card-header">
                         <h4 class="card-title">INVENTARIS SMK FATAHILLAH CILEUNGSI</h4>
                     </div>
@@ -252,154 +168,100 @@ require 'vendor/autoload.php';
                     </div>
                 </div>
             </div>
-
-
-            <div class="row">
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <a href="daftar_barang.php" style="text-decoration: none; color: inherit;">
-                        <div class="widget-stat card bg-info">
-                            <div class="card-body p-4">
-                                <div class="media">
-                                    <span class="me-3">
-                                        <i class="fas fa-archive fa-3x"></i>
-                                    </span>
-                                    <div class="media-body text-white text-end">
-                                        <p class="mb-1">Total Barang</p>
-                                        <h3 class="text-white">
-                                            <?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM barang")); ?>
-                                        </h3>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <a href="kategori_barang.php" style="text-decoration: none; color: inherit;">
-                        <div class="widget-stat card bg-primary">
-                            <div class="card-body p-4">
-                                <div class="media">
-                                    <span class="me-3">
-                                        <i class="fas fa-school fa-3x"></i>
-                                    </span>
-                                    <div class="media-body text-white text-end">
-                                        <p class="mb-1">Total Kategory</p>
-                                        <h3 class="text-white">
-                                            <?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM kategori")); ?>
-                                        </h3>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <a href="?page=RuangPenunjang" style="text-decoration: none; color: inherit;">
-                        <div class="widget-stat card bg-success">
-                            <div class="card-body p-4">
-                                <div class="media">
-                                    <span class="me-3">
-                                        <i class="fas fa-place-of-worship fa-3x"></i>
-                                    </span>
-                                    <div class="media-body text-white text-end">
-                                        <p class="mb-1">Ruang Penunjang</p>
-                                        <h3 class="text-white">
-                                            <?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM penunjang")); ?>
-                                        </h3>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <a href="?page=penyimpanan" style="text-decoration: none; color: inherit;">
-                        <div class="widget-stat card bg-danger">
-                            <div class="card-body p-4">
-                                <div class="media">
-                                    <span class="me-3">
-                                        <i class="fas fa-warehouse fa-3x"></i>
-                                    </span>
-                                    <div class="media-body text-white text-end">
-                                        <p class="mb-1">Alat Penyimpanan</p>
-                                        <h3 class="text-white">
-                                            <?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM penyimpanan")); ?>
-                                        </h3>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
+            <div class="col-xl-12 card-body-table">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <td>Total Kategori</td>
+                                    <td>Total Barang</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM kategori")); ?></td>
+                                    <td><?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM barang")); ?></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <script>
-                function printContent(el) {
-                    var restorepage = document.body.innerHTML;
-                    var printcontent = document.getElementById(el).innerHTML;
-                    document.body.innerHTML = printcontent;
-                    window.print();
-                    document.body.innerHTML = restorepage;
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function printContent(el) {
+            var restorepage = document.body.innerHTML;
+            var printcontent = document.getElementById(el).innerHTML;
+            document.body.innerHTML = printcontent;
+            window.print();
+            document.body.innerHTML = restorepage;
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('searchInput').addEventListener('input', filterTable);
+            document.getElementById('categoryFilter').addEventListener('change', filterTable);
+        });
+
+        function scrollToTable(direction) {
+            const table = document.getElementById('dataTable1');
+            const rows = table.querySelectorAll('tbody tr');
+            let targetRow;
+
+            if (direction === 'down') {
+                for (let i = 0; i < rows.length; i++) {
+                    if (rows[i].style.display !== 'none') {
+                        targetRow = rows[i];
+                        break;
+                    }
                 }
-            </script>
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    document.getElementById('searchInput').addEventListener('input', filterTable);
-                    document.getElementById('categoryFilter').addEventListener('change', filterTable);
+            } else {
+                for (let i = rows.length - 1; i >= 0; i--) {
+                    if (rows[i].style.display !== 'none') {
+                        targetRow = rows[i];
+                        break;
+                    }
+                }
+            }
+
+            if (targetRow) {
+                targetRow.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
                 });
+            }
+        }
 
+        function filterTable() {
+            const searchInput = document.getElementById('searchInput').value.toUpperCase();
+            const categoryFilter = document.getElementById('categoryFilter').value.toUpperCase();
+            const table = document.getElementById('dataTable1');
+            const tr = table.querySelectorAll('tbody tr');
 
-
-                function scrollToTable(direction) {
-                    const table = document.getElementById('dataTable1');
-                    const rows = table.querySelectorAll('tbody tr');
-                    let targetRow;
-
-                    if (direction === 'down') {
-                        for (let i = 0; i < rows.length; i++) {
-                            if (rows[i].style.display !== 'none') {
-                                targetRow = rows[i];
-                                break;
-                            }
+            for (let i = 0; i < tr.length; i++) {
+                let match = false;
+                const td = tr[i].getElementsByTagName('td');
+                for (let j = 0; j < td.length; j++) {
+                    if (td[j]) {
+                        const textValue = td[j].innerText.toUpperCase();
+                        if (textValue.indexOf(searchInput) > -1 &&
+                            (categoryFilter === "" || (j === 2 && textValue === categoryFilter))) {
+                            match = true;
+                            break;
                         }
-                    } else {
-                        for (let i = rows.length - 1; i >= 0; i--) {
-                            if (rows[i].style.display !== 'none') {
-                                targetRow = rows[i];
-                                break;
-                            }
-                        }
-                    }
-
-                    if (targetRow) {
-                        targetRow.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
                     }
                 }
-
-                function filterTable() {
-                    const searchInput = document.getElementById('searchInput').value.toUpperCase();
-                    const categoryFilter = document.getElementById('categoryFilter').value.toUpperCase();
-                    const table = document.getElementById('dataTable1');
-                    const tr = table.querySelectorAll('tbody tr');
-
-                    for (let i = 0; i < tr.length; i++) {
-                        let match = false;
-                        const td = tr[i].getElementsByTagName('td');
-                        for (let j = 0; j < td.length; j++) {
-                            if (td[j]) {
-                                const textValue = td[j].innerText.toUpperCase();
-                                if (textValue.indexOf(searchInput) > -1 &&
-                                    (categoryFilter === "" || (j === 2 && textValue === categoryFilter))) {
-                                    match = true;
-                                    break;
-                                }
-                            }
-                        }
-                        tr[i].style.display = match ? '' : 'none';
-                    }
-                }
-            </script>
+                tr[i].style.display = match ? '' : 'none';
+            }
+        }
+    </script>
 </body>
+
+</html>
