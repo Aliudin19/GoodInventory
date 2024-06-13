@@ -1,6 +1,72 @@
-<?php
+<?php  
 include "koneksi.php";
 require 'vendor/autoload.php';
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Navbar with Login</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .navbar-brand img {
+            height: 30px;
+            width: 30px;
+        }
+        .navbar-nav .nav-item .nav-link {
+            color: white;
+        }
+        .navbar-nav .nav-item .nav-link:hover {
+            color: #f8f9fa;
+        }
+        .login-btn {
+            color: white;
+            background-color: #28a745;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .login-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" >
+        <img src="./img/logo.png" alt="Logo">
+        Inventory
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+        <a class="nav-link active" aria-current="true" href="home.php">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="daftar_barang.php">Daftar Barang</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="kategori_barang.php">Daftar Kategori</a>
+      </li>
+      
+        </ul>
+        <button class="login-btn" onclick="window.location.href='login.php'">Login</button>
+    </div>
+</nav>
+
+
+
+
+<?php
+
 
 use Picqer\Barcode\BarcodeGeneratorPNG;
 
@@ -30,7 +96,7 @@ if (!$query) {
     die("Error dalam query: " . mysqli_error($koneksi));
 }
 
-$baseUrl = 'index.php?page=total_barang';
+$baseUrl = 'home.php?page=barang';
 
 ?>
 <!DOCTYPE html>
@@ -140,27 +206,26 @@ $baseUrl = 'index.php?page=total_barang';
         }
 
         @media print {
-            body * {
-                visibility: hidden;
-            }
-
-            #printableArea,
-            #printableArea * {
-                visibility: visible;
-            }
-
-            #printableArea {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-            }
-
-            .btn,
-            .card-header a {
-                display: none;
-            }
+        body * {
+            visibility: hidden;
         }
+
+        .print-area,
+        .print-area * {
+            visibility: visible;
+        }
+
+        .print-area {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .btn,
+        .card-header a {
+            display: none;
+        }
+    }
 
         /* CSS for green border */
         .input-group .form-control,
@@ -174,7 +239,7 @@ $baseUrl = 'index.php?page=total_barang';
 
 
 <body>
-    <div class="container-fluid">
+    <div class="container-fluid print-area">
         <!-- Page Heading -->
         <div class="text-center mb-4">
             <h1 class="h3 mb-2 text-gray-800">DAFTAR BARANG SMK FATAHILLAH</h1>
@@ -185,7 +250,7 @@ $baseUrl = 'index.php?page=total_barang';
 
         </div>
         <!-- DataTales Example -->
-        <div class="card shadow mb-4" id="printableArea">
+        <div class="card shadow mb-4" >
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Daftar Barang</h6>
                 <div class="col-md-4">
@@ -208,15 +273,12 @@ $baseUrl = 'index.php?page=total_barang';
                         ?>
                     </select>
                 </div>
+                <button onclick="window.print();" class="btn btn-secondary">
+                <i class="fas fa-print"></i> Print
+            </button>
 
-                <button onclick="printContent('printableArea')" class="btn btn-secondary">
-                    <i class="fas fa-print"></i> Print
-                </button>
-                <button onclick="window.location.href='?page=tambah_barang';" class="btn btn-secondary">
-                Tambah <i class="fas fa-plus"></i> 
-                </button>
             </div>
-            <div class="card-body">
+            <div class="card-body" id="printableArea">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
                         <thead>
@@ -228,7 +290,6 @@ $baseUrl = 'index.php?page=total_barang';
                                 <th>Tanggal</th>
                                 <th>Detail</th>
                                 <th>Kode Barang & Barcode</th>
-                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -252,12 +313,6 @@ $baseUrl = 'index.php?page=total_barang';
                                     <td>
                                         <?php echo $data['kode_barang']; ?><br>
                                         <img src="data:image/png;base64,<?php echo $barcode; ?>" alt="Barcode">
-                                    </td>
-                                    <td>
-                                        <?php if ($_SESSION['user']['role'] != 'pengunjung') { ?>
-                                            <a href="?page=edit_barang&&id=<?php echo $data['id_barang'] ?>" class="btn btn-info"><i class="fas fa-pencil-alt"></i></a>
-                                            <a onclick="return confirm('Yakin di Hapus nih? ');" href="?page=hapus_barang&&id=<?php echo $data['id_barang'] ?>" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
-                                        <?php } ?>
                                     </td>
                                 </tr>
                                 <!-- Detail Modal -->
@@ -336,28 +391,7 @@ $baseUrl = 'index.php?page=total_barang';
         document.getElementById('categoryFilter').addEventListener('change', filterTable);
     });
 
-    function filterTable() {
-        const searchInput = document.getElementById('searchInput').value.toUpperCase();
-        const categoryFilter = document.getElementById('categoryFilter').value.toUpperCase();
-        const table = document.getElementById('dataTable1');
-        const tr = table.querySelectorAll('tbody tr');
-
-        for (let i = 0; i < tr.length; i++) {
-            let match = false;
-            const td = tr[i].getElementsByTagName('td');
-            for (let j = 0; j < td.length; j++) {
-                if (td[j]) {
-                    const textValue = td[j].innerText.toUpperCase();
-                    if (textValue.indexOf(searchInput) > -1 &&
-                        (categoryFilter === "" || (j === 2 && textValue === categoryFilter))) {
-                        match = true;
-                        break;
-                    }
-                }
-            }
-            tr[i].style.display = match ? '' : 'none';
-        }
-    }
+    
 
     function scrollToTable(direction) {
         const table = document.getElementById('dataTable1');
@@ -387,7 +421,27 @@ $baseUrl = 'index.php?page=total_barang';
             });
         }
     }
+    function filterTable() {
+        const searchInput = document.getElementById('searchInput').value.toUpperCase();
+        const categoryFilter = document.getElementById('categoryFilter').value.toUpperCase();
+        const table = document.getElementById('dataTable1');
+        const tr = table.querySelectorAll('tbody tr');
+
+        for (let i = 0; i < tr.length; i++) {
+            let match = false;
+            const td = tr[i].getElementsByTagName('td');
+            for (let j = 0; j < td.length; j++) {
+                if (td[j]) {
+                    const textValue = td[j].innerText.toUpperCase();
+                    if (textValue.indexOf(searchInput) > -1 &&
+                        (categoryFilter === "" || (j === 2 && textValue === categoryFilter))) {
+                        match = true;
+                        break;
+                    }
+                }
+            }
+            tr[i].style.display = match ? '' : 'none';
+        }
+    }
 </script>
 </body>
-
-</html>

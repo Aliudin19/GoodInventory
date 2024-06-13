@@ -1,6 +1,5 @@
 <?php
 include "koneksi.php";
-require 'vendor/autoload.php';
 
 use Picqer\Barcode\BarcodeGeneratorPNG;
 
@@ -30,8 +29,7 @@ if (!$query) {
     die("Error dalam query: " . mysqli_error($koneksi));
 }
 
-$baseUrl = 'index.php?page=total_barang';
-
+$baseUrl = 'home.php?page=barang';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -63,7 +61,8 @@ $baseUrl = 'index.php?page=total_barang';
             align-items: center;
         }
 
-        .btn-primary {
+        .btn-primary,
+        .btn-secondary {
             padding: 0.5rem 1rem;
             font-size: 1rem;
             text-align: center;
@@ -71,18 +70,7 @@ $baseUrl = 'index.php?page=total_barang';
             color: white;
             background-color: #007bff;
             border: none;
-            border-radius: 5px;
-        }
-
-        .btn-secondary {
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            text-align: center;
-            text-decoration: none;
-            color: white;
-            background-color: #6c757d;
-            border: none;
-            border-radius: 5px;
+            border-radius: 10px;
         }
 
         .card {
@@ -102,18 +90,6 @@ $baseUrl = 'index.php?page=total_barang';
             margin: 0;
             font-weight: bold;
             color: #333;
-        }
-
-        .btn-primary,
-        .btn-secondary {
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            text-align: center;
-            text-decoration: none;
-            color: white;
-            background-color: #007bff;
-            border: none;
-            border-radius: 10px;
         }
 
         table {
@@ -140,27 +116,26 @@ $baseUrl = 'index.php?page=total_barang';
         }
 
         @media print {
-            body * {
-                visibility: hidden;
-            }
-
-            #printableArea,
-            #printableArea * {
-                visibility: visible;
-            }
-
-            #printableArea {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-            }
-
-            .btn,
-            .card-header a {
-                display: none;
-            }
+        body * {
+            visibility: hidden;
         }
+
+        .print-area,
+        .print-area * {
+            visibility: visible;
+        }
+
+        .print-area {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .btn,
+        .card-header a {
+            display: none;
+        }
+    }
 
         /* CSS for green border */
         .input-group .form-control,
@@ -174,7 +149,7 @@ $baseUrl = 'index.php?page=total_barang';
 
 
 <body>
-    <div class="container-fluid">
+    <div class="container-fluid print-area">
         <!-- Page Heading -->
         <div class="text-center mb-4">
             <h1 class="h3 mb-2 text-gray-800">DAFTAR BARANG SMK FATAHILLAH</h1>
@@ -185,7 +160,7 @@ $baseUrl = 'index.php?page=total_barang';
 
         </div>
         <!-- DataTales Example -->
-        <div class="card shadow mb-4" id="printableArea">
+        <div class="card shadow mb-4" >
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Daftar Barang</h6>
                 <div class="col-md-4">
@@ -208,13 +183,30 @@ $baseUrl = 'index.php?page=total_barang';
                         ?>
                     </select>
                 </div>
+                <button onclick="window.print();" class="btn btn-secondary">
+                <i class="fas fa-print"></i> Print
+            </button>
+                <div class="col-md-4" id="printableArea">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="searchInput" placeholder="Cari barang disini....">
+                        <button class="btn btn-light" type="button" onclick="scrollToTable('down')">
+                            <i class="bi bi-arrow-down"></i>
+                        </button>
+                    </div>
 
-                <button onclick="printContent('printableArea')" class="btn btn-secondary">
-                    <i class="fas fa-print"></i> Print
-                </button>
-                <button onclick="window.location.href='?page=tambah_barang';" class="btn btn-secondary">
-                Tambah <i class="fas fa-plus"></i> 
-                </button>
+                </div>
+                <div class="col-md-2" id="printableArea">
+                    <select class="form-select" id="categoryFilter" onchange="filterTable()">
+                        <option value="">Semua Kategori</option>
+                        <?php
+                        $kategoriQuery = mysqli_query($koneksi, "SELECT * FROM kategori");
+                        while ($kategori = mysqli_fetch_array($kategoriQuery)) {
+                            echo "<option value='" . $kategori['nama_kategori'] . "'>" . $kategori['nama_kategori'] . "</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -275,6 +267,8 @@ $baseUrl = 'index.php?page=total_barang';
                                                     <h5 class="card-text">Jumlah : <?php echo $data['jumlah']; ?></h5>
                                                     <h5 class="card-text">Status : <?php echo $data['kondisi']; ?></h5>
                                                     <h5 class="card-text">Lokasi : <?php echo $data['lokasi']; ?></h5>
+                                                    <p>Keterangan Status : <br> baik -> Barang tidak
+                                                        <?php echo $data['lokasi']; ?></h5>
                                                     <p>Keterangan Status : <br> baik -> Barang tidak ada yang rusak <br> rusak ringan -> beberapa rusak <br> rusak parah -> kebanyakan rusak </p>
                                                 </div>
                                             </div>
@@ -285,6 +279,7 @@ $baseUrl = 'index.php?page=total_barang';
                                         </div>
                                     </div>
                                 </div>
+                                <!-- Akhir Detail Modal -->
                             <?php
                             }
                             ?>
@@ -316,78 +311,67 @@ $baseUrl = 'index.php?page=total_barang';
                 </nav>
             </div>
         </div>
-
-
-
     </div>
 
     <script>
-        function printContent(el) {
-            var restorepage = document.body.innerHTML;
-            var printcontent = document.getElementById(el).innerHTML;
-            document.body.innerHTML = printcontent;
-            window.print();
-            document.body.innerHTML = restorepage;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('searchInput').addEventListener('input', filterTable);
+            document.getElementById('categoryFilter').addEventListener('change', filterTable);
+        });
+
+        function filterTable() {
+            const searchInput = document.getElementById('searchInput').value.toUpperCase();
+            const categoryFilter = document.getElementById('categoryFilter').value.toUpperCase();
+            const table = document.getElementById('dataTable1');
+            const tr = table.querySelectorAll('tbody tr');
+
+            for (let i = 0; i < tr.length; i++) {
+                let match = false;
+                const td = tr[i].getElementsByTagName('td');
+                for (let j = 0; j < td.length; j++) {
+                    if (td[j]) {
+                        const textValue = td[j].innerText.toUpperCase();
+                        if (textValue.indexOf(searchInput) > -1 &&
+                            (categoryFilter === "" || (j === 2 && textValue === categoryFilter))) {
+                            match = true;
+                            break;
+                        }
+                    }
+                }
+                tr[i].style.display = match ? '' : 'none';
+            }
         }
-    </script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('searchInput').addEventListener('input', filterTable);
-        document.getElementById('categoryFilter').addEventListener('change', filterTable);
-    });
 
-    function filterTable() {
-        const searchInput = document.getElementById('searchInput').value.toUpperCase();
-        const categoryFilter = document.getElementById('categoryFilter').value.toUpperCase();
-        const table = document.getElementById('dataTable1');
-        const tr = table.querySelectorAll('tbody tr');
+        function scrollToTable(direction) {
+            const table = document.getElementById('dataTable1');
+            const rows = table.querySelectorAll('tbody tr');
+            let targetRow;
 
-        for (let i = 0; i < tr.length; i++) {
-            let match = false;
-            const td = tr[i].getElementsByTagName('td');
-            for (let j = 0; j < td.length; j++) {
-                if (td[j]) {
-                    const textValue = td[j].innerText.toUpperCase();
-                    if (textValue.indexOf(searchInput) > -1 &&
-                        (categoryFilter === "" || (j === 2 && textValue === categoryFilter))) {
-                        match = true;
+            if (direction === 'down') {
+                for (let i = 0; i < rows.length; i++) {
+                    if (rows[i].style.display !== 'none') {
+                        targetRow = rows[i];
+                        break;
+                    }
+                }
+            } else {
+                for (let i = rows.length - 1; i >= 0; i--) {
+                    if (rows[i].style.display !== 'none') {
+                        targetRow = rows[i];
                         break;
                     }
                 }
             }
-            tr[i].style.display = match ? '' : 'none';
-        }
-    }
 
-    function scrollToTable(direction) {
-        const table = document.getElementById('dataTable1');
-        const rows = table.querySelectorAll('tbody tr');
-        let targetRow;
-
-        if (direction === 'down') {
-            for (let i = 0; i < rows.length; i++) {
-                if (rows[i].style.display !== 'none') {
-                    targetRow = rows[i];
-                    break;
-                }
-            }
-        } else {
-            for (let i = rows.length - 1; i >= 0; i--) {
-                if (rows[i].style.display !== 'none') {
-                    targetRow = rows[i];
-                    break;
-                }
+            if (targetRow) {
+                targetRow.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
             }
         }
-
-        if (targetRow) {
-            targetRow.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-    }
-</script>
+    </script>
 </body>
 
 </html>
