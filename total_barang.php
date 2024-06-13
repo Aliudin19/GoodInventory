@@ -6,6 +6,9 @@ use Picqer\Barcode\BarcodeGeneratorPNG;
 
 // Tentukan jumlah data per halaman
 $limit = 10;
+// LIMIT $limit OFFSET $offset
+// Mengganti karakter yang tidak valid pada ID dengan karakter yang valid
+
 
 // Hitung offset (mulai data)
 $currentPage = isset($_GET['pagenum']) ? intval($_GET['pagenum']) : 1;
@@ -23,7 +26,7 @@ $totalPages = ceil($totalRows / $limit);
 $currentPage = max(1, min($currentPage, $totalPages));
 
 // Ambil data sesuai dengan limit dan offset
-$query = mysqli_query($koneksi, "SELECT barang.*, kategori.nama_kategori FROM barang LEFT JOIN kategori ON barang.id_kategori = kategori.id_kategori LIMIT $limit OFFSET $offset");
+$query = mysqli_query($koneksi, "SELECT barang.*, kategori.nama_kategori FROM barang LEFT JOIN kategori ON barang.id_kategori = kategori.id_kategori ");
 
 // Penanganan Error (Opsional)
 if (!$query) {
@@ -213,7 +216,7 @@ $baseUrl = 'index.php?page=total_barang';
                     <i class="fas fa-print"></i> Print
                 </button>
                 <button onclick="window.location.href='?page=tambah_barang';" class="btn btn-secondary">
-                Tambah <i class="fas fa-plus"></i> 
+                    Tambah <i class="fas fa-plus"></i>
                 </button>
             </div>
             <div class="card-body">
@@ -237,6 +240,9 @@ $baseUrl = 'index.php?page=total_barang';
                             while ($data = mysqli_fetch_array($query)) {
                                 $generator = new BarcodeGeneratorPNG();
                                 $barcode = base64_encode($generator->getBarcode($data['kode_barang'], $generator::TYPE_CODE_128));
+
+                                // Mengganti karakter yang tidak valid pada ID dengan karakter yang valid
+                                $modalId = str_replace('.', '-', $data['kode_barang']);
                             ?>
                                 <tr>
                                     <td><?php echo $i++; ?></td>
@@ -245,9 +251,10 @@ $baseUrl = 'index.php?page=total_barang';
                                     <td><?php echo $data['jumlah']; ?></td>
                                     <td><?php echo $data['tanggal']; ?></td>
                                     <td>
-                                        <a href="#" data-bs-toggle="modal" data-bs-target="#detailModal<?php echo $data['kode_barang']; ?>">
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#detailModal<?php echo $modalId; ?>">
                                             <i class="fas fa-eye"></i>
                                         </a>
+
                                     </td>
                                     <td>
                                         <?php echo $data['kode_barang']; ?><br>
@@ -261,7 +268,8 @@ $baseUrl = 'index.php?page=total_barang';
                                     </td>
                                 </tr>
                                 <!-- Detail Modal -->
-                                <div class="modal fade" id="detailModal<?php echo $data['kode_barang']; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="detailModal<?php echo $modalId; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -291,7 +299,7 @@ $baseUrl = 'index.php?page=total_barang';
                         </tbody>
                     </table>
                 </div>
-                <nav>
+                <!-- <nav>
                     <ul class="pagination pagination-circle">
                         <?php
                         // Tombol Previous (Tidak ada perubahan)
@@ -313,7 +321,7 @@ $baseUrl = 'index.php?page=total_barang';
                         }
                         ?>
                     </ul>
-                </nav>
+                </nav> -->
             </div>
         </div>
 
@@ -331,63 +339,63 @@ $baseUrl = 'index.php?page=total_barang';
         }
     </script>
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('searchInput').addEventListener('input', filterTable);
-        document.getElementById('categoryFilter').addEventListener('change', filterTable);
-    });
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('searchInput').addEventListener('input', filterTable);
+            document.getElementById('categoryFilter').addEventListener('change', filterTable);
+        });
 
-    function filterTable() {
-        const searchInput = document.getElementById('searchInput').value.toUpperCase();
-        const categoryFilter = document.getElementById('categoryFilter').value.toUpperCase();
-        const table = document.getElementById('dataTable1');
-        const tr = table.querySelectorAll('tbody tr');
+        function filterTable() {
+            const searchInput = document.getElementById('searchInput').value.toUpperCase();
+            const categoryFilter = document.getElementById('categoryFilter').value.toUpperCase();
+            const table = document.getElementById('dataTable1');
+            const tr = table.querySelectorAll('tbody tr');
 
-        for (let i = 0; i < tr.length; i++) {
-            let match = false;
-            const td = tr[i].getElementsByTagName('td');
-            for (let j = 0; j < td.length; j++) {
-                if (td[j]) {
-                    const textValue = td[j].innerText.toUpperCase();
-                    if (textValue.indexOf(searchInput) > -1 &&
-                        (categoryFilter === "" || (j === 2 && textValue === categoryFilter))) {
-                        match = true;
+            for (let i = 0; i < tr.length; i++) {
+                let match = false;
+                const td = tr[i].getElementsByTagName('td');
+                for (let j = 0; j < td.length; j++) {
+                    if (td[j]) {
+                        const textValue = td[j].innerText.toUpperCase();
+                        if (textValue.indexOf(searchInput) > -1 &&
+                            (categoryFilter === "" || (j === 2 && textValue === categoryFilter))) {
+                            match = true;
+                            break;
+                        }
+                    }
+                }
+                tr[i].style.display = match ? '' : 'none';
+            }
+        }
+
+        function scrollToTable(direction) {
+            const table = document.getElementById('dataTable1');
+            const rows = table.querySelectorAll('tbody tr');
+            let targetRow;
+
+            if (direction === 'down') {
+                for (let i = 0; i < rows.length; i++) {
+                    if (rows[i].style.display !== 'none') {
+                        targetRow = rows[i];
+                        break;
+                    }
+                }
+            } else {
+                for (let i = rows.length - 1; i >= 0; i--) {
+                    if (rows[i].style.display !== 'none') {
+                        targetRow = rows[i];
                         break;
                     }
                 }
             }
-            tr[i].style.display = match ? '' : 'none';
-        }
-    }
 
-    function scrollToTable(direction) {
-        const table = document.getElementById('dataTable1');
-        const rows = table.querySelectorAll('tbody tr');
-        let targetRow;
-
-        if (direction === 'down') {
-            for (let i = 0; i < rows.length; i++) {
-                if (rows[i].style.display !== 'none') {
-                    targetRow = rows[i];
-                    break;
-                }
-            }
-        } else {
-            for (let i = rows.length - 1; i >= 0; i--) {
-                if (rows[i].style.display !== 'none') {
-                    targetRow = rows[i];
-                    break;
-                }
+            if (targetRow) {
+                targetRow.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
             }
         }
-
-        if (targetRow) {
-            targetRow.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-    }
-</script>
+    </script>
 </body>
 
 </html>

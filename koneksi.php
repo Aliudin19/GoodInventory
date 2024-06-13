@@ -1,5 +1,5 @@
 <?php
 error_reporting(0);
 session_start();
-$koneksi = mysqli_connect('localhost', 'root', '', 'smart_inventory');
+$koneksi = mysqli_connect('localhost', 'root', '', 'inventoryy');
 ?>

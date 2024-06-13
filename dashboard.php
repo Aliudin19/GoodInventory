@@ -115,7 +115,7 @@ include "koneksi.php"
                 /* Menambahkan jarak antara card aset */
             }
 
-            
+
 
             .card-body {
                 padding: 20px;
@@ -291,7 +291,7 @@ include "koneksi.php"
                                 <div class="card-footer-link mb-4 mb-sm-0">
                                     <p class="card-text text-dark d-inline">Tekan tombol upload untuk tambah data</p>
                                 </div>
-                                <button type="button" class="btn btn-rounded btn-primary" onclick="togglePopup()">
+                                <button type="button" class="btn btn-rounded btn-primary" onclick="window.location.href='?page=tambah_barang';">
                                     <span class="btn-icon-start text-warning"><i class="fa fa-plus color-info"></i></span>Upload
                                 </button>
                             </div>
@@ -301,26 +301,6 @@ include "koneksi.php"
 
                 <!-- Pop-up Container -->
 
-                <div id="popup-container" class="popup-container">
-                    <div class="popup">
-                        <h3>Upload Berdasarkan Kategori</h3>
-                        <a href="?page=tambah_aset" class="btn btn-primary">Prasarana Utama</a>
-                        <a href="?page=tambah_pembelajaran" class="btn btn-primary popup-btn">Ruang Pembelajaran</a>
-                        <a href="?page=tambah_penunjang" class="btn btn-primary popup-btn">Ruang Penunjang</a>
-                        <a href="?page=tambah_penyimpan" class="btn btn-primary popup-btn">Alat Penyimpanan</a>
-                        <a href="?page=tambah_kantor" class="btn btn-primary popup-btn">Alat Kantor</a>
-                        <a href="?page=tambah_mebe" class="btn btn-primary popup-btn">Mebeulier</a>
-                        <a href="?page=tambah_dingin" class="btn btn-primary popup-btn">Alat Pendingin</a>
-                        <a href="?page=tambah_dapur" class="btn btn-primary popup-btn">Peralatan Dapur</a>
-                        <a href="?page=tambah_bersih" class="btn btn-primary popup-btn">Alat Kebersihan</a>
-                        <a href="?page=tambah_tanaman" class="btn btn-primary popup-btn">Alat Tanaman</a>
-                        <a href="?page=tambah_olahraga" class="btn btn-primary popup-btn">Peralatan Olahraga</a>
-                        <a href="?page=tambah_jaringan" class="btn btn-primary popup-btn">Peralatan Jaringan</a>
-                        <a href="?page=tambah_komunikasi" class="btn btn-primary popup-btn">Peralatan Komunikasi</a>
-                        <a href="?page=tambah_medis" class="btn btn-primary popup-btn">Obat & Peralatan UKS</a>
-                        <button class="close-btn" onclick="togglePopup()">Tutup</button>
-                    </div>
-                </div>
 
 
 
@@ -351,29 +331,31 @@ include "koneksi.php"
 
 
 
-        
 
 
 
 
-<div class="card">
-    <div class="card-body">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <td>Total Kategori</td>
-                    <td>Total Barang</td>
-                    <td>Total Data</td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM kategori")); ?></td>
-                    <td><?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM barang")); ?></td>
-                    <td><?= $barang ?></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <td>Total Kategori</td>
+                            <td>Total Barang</td>
+                            <td>Total Data</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM kategori")); ?></td>
+                            <td><?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM barang")); ?></td>
+                            <td><?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM barang")) + mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM kategori")); ?></td>
+                        </tr>
+                    </tbody>
+
+
+                </table>
+            </div>
+        </div>
 </div>

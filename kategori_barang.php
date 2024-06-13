@@ -80,7 +80,7 @@ require 'vendor/autoload.php';
 
     // Tentukan jumlah data per halaman
     $limit = 10;
-
+//LIMIT $limit OFFSET $offset
     // Hitung offset (mulai data)
     $currentPage = isset($_GET['pagenum']) ? intval($_GET['pagenum']) : 1;
     $offset = ($currentPage - 1) * $limit;
@@ -97,7 +97,7 @@ require 'vendor/autoload.php';
     $currentPage = max(1, min($currentPage, $totalPages));
 
     // Ambil data sesuai dengan limit dan offset
-    $query = mysqli_query($koneksi, "SELECT barang.*, kategori.nama_kategori FROM barang LEFT JOIN kategori ON barang.id_kategori = kategori.id_kategori LIMIT $limit OFFSET $offset");
+    $query = mysqli_query($koneksi, "SELECT * FROM kategori ");
 
     // Penanganan Error (Opsional)
     if (!$query) {
@@ -279,7 +279,7 @@ require 'vendor/autoload.php';
                             ?>
                         </table>
                     </div>
-                    <nav>
+                    <!-- <nav>
                         <ul class="pagination pagination-circle">
                             <?php
                             // Tombol Previous (Tidak ada perubahan)
@@ -301,7 +301,7 @@ require 'vendor/autoload.php';
                             }
                             ?>
                         </ul>
-                    </nav>
+                    </nav> -->
                 </div>
             </div>
         </div>

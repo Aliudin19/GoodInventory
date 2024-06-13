@@ -80,9 +80,7 @@ include "koneksi.php";
                   <div class="text-center">
                     <p>&copy; 2024 BrotherRpl. All rights reserved.</p>
                   </div>
-                  <footer class="text mt-4 footer-text">
-                    <p>Gunakan Akun ini jika Anda bukan Admin: <br> user: pengunjung <br> password: pengunjung111</p>
-                  </footer>
+                  
                 </div>
               </div>
             </div>

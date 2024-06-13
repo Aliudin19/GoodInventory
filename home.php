@@ -42,7 +42,7 @@ require 'vendor/autoload.php';
         }
 
         body {
-            background-image: url('img/fapic3.jpeg');
+            background-color: lightgoldenrodyellow;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -157,7 +157,7 @@ require 'vendor/autoload.php';
 
     <div class="container mt-1">
         <div class="row">
-            <div class="col-xl-6 mx-auto">
+            <div class="col-xl-8 mx-auto">
                 <div class="card card-custom">
                     <img class="card-img-top centered-img" src="images/card/fatahillahBG.jpeg" alt="Card image cap">
                     <div class="card-header">

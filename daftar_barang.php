@@ -1,10 +1,11 @@
-<?php  
+<?php
 include "koneksi.php";
 require 'vendor/autoload.php';
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,12 +19,15 @@ require 'vendor/autoload.php';
             height: 30px;
             width: 30px;
         }
+
         .navbar-nav .nav-item .nav-link {
             color: white;
         }
+
         .navbar-nav .nav-item .nav-link:hover {
             color: #f8f9fa;
         }
+
         .login-btn {
             color: white;
             background-color: #28a745;
@@ -32,323 +36,332 @@ require 'vendor/autoload.php';
             border-radius: 5px;
             transition: background-color 0.3s ease;
         }
+
         .login-btn:hover {
             background-color: #218838;
         }
     </style>
 </head>
+
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" >
-        <img src="./img/logo.png" alt="Logo">
-        Inventory
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-        <a class="nav-link active" aria-current="true" href="home.php">Home</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="daftar_barang.php">Daftar Barang</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="kategori_barang.php">Daftar Kategori</a>
-      </li>
-      
-        </ul>
-        <button class="login-btn" onclick="window.location.href='login.php'">Login</button>
-    </div>
-</nav>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand">
+            <img src="./img/logo.png" alt="Logo">
+            Inventory
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="true" href="home.php">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="daftar_barang.php">Daftar Barang</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="kategori_barang.php">Daftar Kategori</a>
+                </li>
+
+            </ul>
+            <button class="login-btn" onclick="window.location.href='login.php'">Login</button>
+        </div>
+    </nav>
 
 
 
 
-<?php
+    <?php
 
 
-use Picqer\Barcode\BarcodeGeneratorPNG;
+    use Picqer\Barcode\BarcodeGeneratorPNG;
 
-// Tentukan jumlah data per halaman
-$limit = 10;
+    // Tentukan jumlah data per halaman
+    $limit = 10;
 
-// Hitung offset (mulai data)
-$currentPage = isset($_GET['pagenum']) ? intval($_GET['pagenum']) : 1;
-$offset = ($currentPage - 1) * $limit;
 
-// Hitung jumlah total data pada tabel barang
-$queryTotal = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM barang");
-$row = mysqli_fetch_assoc($queryTotal);
-$totalRows = $row['total'];
+    //LIMIT $limit OFFSET $offset
+    // Hitung offset (mulai data)
+    $currentPage = isset($_GET['pagenum']) ? intval($_GET['pagenum']) : 1;
+    $offset = ($currentPage - 1) * $limit;
 
-// Hitung jumlah halaman
-$totalPages = ceil($totalRows / $limit);
+    // Hitung jumlah total data pada tabel barang
+    $queryTotal = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM barang");
+    $row = mysqli_fetch_assoc($queryTotal);
+    $totalRows = $row['total'];
 
-// Pastikan nomor halaman valid (minimal 1 dan maksimal total halaman)
-$currentPage = max(1, min($currentPage, $totalPages));
+    // Hitung jumlah halaman
+    $totalPages = ceil($totalRows / $limit);
 
-// Ambil data sesuai dengan limit dan offset
-$query = mysqli_query($koneksi, "SELECT barang.*, kategori.nama_kategori FROM barang LEFT JOIN kategori ON barang.id_kategori = kategori.id_kategori LIMIT $limit OFFSET $offset");
+    // Pastikan nomor halaman valid (minimal 1 dan maksimal total halaman)
+    $currentPage = max(1, min($currentPage, $totalPages));
 
-// Penanganan Error (Opsional)
-if (!$query) {
-    die("Error dalam query: " . mysqli_error($koneksi));
-}
+    // Ambil data sesuai dengan limit dan offset
+    $query = mysqli_query($koneksi, "SELECT barang.*, kategori.nama_kategori FROM barang LEFT JOIN kategori ON barang.id_kategori = kategori.id_kategori ");
 
-$baseUrl = 'home.php?page=barang';
-
-?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barang SMK FATAHILLAH</title>
-    <style>
-        .text-center {
-            margin-top: 50px;
-        }
-
-        .text-center h1 {
-            font-size: 36px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .text-center hr {
-            border: 2px solid #333;
-            width: 50px;
-            margin: 20px auto;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .btn-primary {
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            text-align: center;
-            text-decoration: none;
-            color: white;
-            background-color: #007bff;
-            border: none;
-            border-radius: 5px;
-        }
-
-        .btn-secondary {
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            text-align: center;
-            text-decoration: none;
-            color: white;
-            background-color: #6c757d;
-            border: none;
-            border-radius: 5px;
-        }
-
-        .card {
-            margin: 0 2rem;
-            padding: 1rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-        }
-
-        .card-header h6 {
-            margin: 0;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .btn-primary,
-        .btn-secondary {
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            text-align: center;
-            text-decoration: none;
-            color: white;
-            background-color: #007bff;
-            border: none;
-            border-radius: 10px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th,
-        td {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #ddd;
-            vertical-align: middle;
-        }
-
-        th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        @media print {
-        body * {
-            visibility: hidden;
-        }
-
-        .print-area,
-        .print-area * {
-            visibility: visible;
-        }
-
-        .print-area {
-            position: absolute;
-            left: 0;
-            top: 0;
-        }
-
-        .btn,
-        .card-header a {
-            display: none;
-        }
+    // Penanganan Error (Opsional)
+    if (!$query) {
+        die("Error dalam query: " . mysqli_error($koneksi));
     }
 
-        /* CSS for green border */
-        .input-group .form-control,
-        .input-group .form-select {
-            border: 2px solid lightgray;
-            border-radius: 5px;
-        }
-    </style>
+    $baseUrl = 'home.php?page=barang';
 
-</head>
+    ?>
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+        <title>Barang SMK FATAHILLAH</title>
+        <style>
+            .text-center {
+                margin-top: 50px;
+            }
+
+            .text-center h1 {
+                font-size: 36px;
+                font-weight: bold;
+                color: #333;
+            }
+
+            .text-center hr {
+                border: 2px solid #333;
+                width: 50px;
+                margin: 20px auto;
+            }
+
+            .card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .btn-primary {
+                padding: 0.5rem 1rem;
+                font-size: 1rem;
+                text-align: center;
+                text-decoration: none;
+                color: white;
+                background-color: #007bff;
+                border: none;
+                border-radius: 5px;
+            }
+
+            .btn-secondary {
+                padding: 0.5rem 1rem;
+                font-size: 1rem;
+                text-align: center;
+                text-decoration: none;
+                color: white;
+                background-color: #6c757d;
+                border: none;
+                border-radius: 5px;
+            }
+
+            .card {
+                margin: 0 2rem;
+                padding: 1rem;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 1rem;
+            }
+
+            .card-header h6 {
+                margin: 0;
+                font-weight: bold;
+                color: #333;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                padding: 0.5rem 1rem;
+                font-size: 1rem;
+                text-align: center;
+                text-decoration: none;
+                color: white;
+                background-color: #007bff;
+                border: none;
+                border-radius: 10px;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+
+            th,
+            td {
+                padding: 10px;
+                text-align: center;
+                border: 1px solid #ddd;
+                vertical-align: middle;
+            }
+
+            th {
+                background-color: #f2f2f2;
+                font-weight: bold;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+            }
+
+            @media print {
+                body * {
+                    visibility: hidden;
+                }
+
+                .print-area,
+                .print-area * {
+                    visibility: visible;
+                }
+
+                .print-area {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                }
+
+                .btn,
+                .card-header a {
+                    display: none;
+                }
+            }
+
+            /* CSS for green border */
+            .input-group .form-control,
+            .input-group .form-select {
+                border: 2px solid lightgray;
+                border-radius: 5px;
+            }
+        </style>
+
+    </head>
 
 
-<body>
-    <div class="container-fluid print-area">
-        <!-- Page Heading -->
-        <div class="text-center mb-4">
-            <h1 class="h3 mb-2 text-gray-800">DAFTAR BARANG SMK FATAHILLAH</h1>
-            <hr>
-        </div>
-        <div class="row justify-content-center mb-3">
+    <body>
+        <div class="container-fluid print-area">
+            <!-- Page Heading -->
+            <div class="text-center mb-4">
+                <h1 class="h3 mb-2 text-gray-800">DAFTAR BARANG SMK FATAHILLAH</h1>
+                <hr>
+            </div>
+            <div class="row justify-content-center mb-3">
 
-
-        </div>
-        <!-- DataTales Example -->
-        <div class="card shadow mb-4" >
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Daftar Barang</h6>
-                <div class="col-md-4">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="searchInput" placeholder="Cari barang disini....">
-                        <button class="btn btn-light" type="button" onclick="scrollToTable('down')">
-                            <i class="bi bi-arrow-down"></i>
-                        </button>
-                    </div>
-
-                </div>
-                <div class="col-md-2">
-                    <select class="form-select" id="categoryFilter" onchange="filterTable()">
-                        <option value="">Semua Kategori</option>
-                        <?php
-                        $kategoriQuery = mysqli_query($koneksi, "SELECT * FROM kategori");
-                        while ($kategori = mysqli_fetch_array($kategoriQuery)) {
-                            echo "<option value='" . $kategori['nama_kategori'] . "'>" . $kategori['nama_kategori'] . "</option>";
-                        }
-                        ?>
-                    </select>
-                </div>
-                <button onclick="window.print();" class="btn btn-secondary">
-                <i class="fas fa-print"></i> Print
-            </button>
 
             </div>
-            <div class="card-body" id="printableArea">
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Nama Barang</th>
-                                <th>Kategori</th>
-                                <th>Jumlah</th>
-                                <th>Tanggal</th>
-                                <th>Detail</th>
-                                <th>Kode Barang & Barcode</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+            <!-- DataTales Example -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Daftar Barang</h6>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="searchInput" placeholder="Cari barang disini....">
+                            <button class="btn btn-light" type="button" onclick="scrollToTable('down')">
+                                <i class="bi bi-arrow-down"></i>
+                            </button>
+                        </div>
+
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-select" id="categoryFilter" onchange="filterTable()">
+                            <option value="">Semua Kategori</option>
                             <?php
-                            $i = 1 + $offset;
-                            while ($data = mysqli_fetch_array($query)) {
-                                $generator = new BarcodeGeneratorPNG();
-                                $barcode = base64_encode($generator->getBarcode($data['kode_barang'], $generator::TYPE_CODE_128));
+                            $kategoriQuery = mysqli_query($koneksi, "SELECT * FROM kategori");
+                            while ($kategori = mysqli_fetch_array($kategoriQuery)) {
+                                echo "<option value='" . $kategori['nama_kategori'] . "'>" . $kategori['nama_kategori'] . "</option>";
+                            }
                             ?>
+                        </select>
+                    </div>
+                    <button onclick="window.print();" class="btn btn-secondary">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+
+                </div>
+                <div class="card-body" id="printableArea">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
+                            <thead>
                                 <tr>
-                                    <td><?php echo $i++; ?></td>
-                                    <td><?php echo $data['nama_barang']; ?></td>
-                                    <td><?php echo $data['nama_kategori']; ?></td>
-                                    <td><?php echo $data['jumlah']; ?></td>
-                                    <td><?php echo $data['tanggal']; ?></td>
-                                    <td>
-                                        <a href="#" data-bs-toggle="modal" data-bs-target="#detailModal<?php echo $data['kode_barang']; ?>">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <?php echo $data['kode_barang']; ?><br>
-                                        <img src="data:image/png;base64,<?php echo $barcode; ?>" alt="Barcode">
-                                    </td>
+                                    <th>No</th>
+                                    <th>Nama Barang</th>
+                                    <th>Kategori</th>
+                                    <th>Jumlah</th>
+                                    <th>Tanggal</th>
+                                    <th>lokasi</th>
+                                    <th>Kode Barang & Barcode</th>
+
                                 </tr>
-                                <!-- Detail Modal -->
-                                <div class="modal fade" id="detailModal<?php echo $data['kode_barang']; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Detail Barang</h5>
-                                            </div>
-                                            <div class="modal-body">
-                                                <!-- Tampilkan gambar dari data BLOB -->
-                                                <img src="data:image/jpeg;base64,<?php echo base64_encode($data['foto']); ?>" class="card-img-top" alt="Detail Aset">
-                                                <div class="card-body">
-                                                    <h4 class="card-title"><?php echo $data['nama_barang']; ?></h4>
-                                                    <h5 class="card-text">Jumlah : <?php echo $data['jumlah']; ?></h5>
-                                                    <h5 class="card-text">Status : <?php echo $data['kondisi']; ?></h5>
-                                                    <h5 class="card-text">Lokasi : <?php echo $data['lokasi']; ?></h5>
-                                                    <p>Keterangan Status : <br> baik -> Barang tidak ada yang rusak <br> rusak ringan -> beberapa rusak <br> rusak parah -> kebanyakan rusak </p>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $i = 1 + $offset;
+                                while ($data = mysqli_fetch_array($query)) {
+                                    $generator = new BarcodeGeneratorPNG();
+                                    $barcode = base64_encode($generator->getBarcode($data['kode_barang'], $generator::TYPE_CODE_128));
+
+                                    // Mengganti karakter yang tidak valid pada ID dengan karakter yang valid
+                                    $modalId = str_replace('.', '-', $data['kode_barang']);
+                                ?>
+                                    <tr>
+                                        <td><?php echo $i++; ?></td>
+                                        <td><?php echo $data['nama_barang']; ?></td>
+                                        <td><?php echo $data['nama_kategori']; ?></td>
+                                        <td><?php echo $data['jumlah']; ?></td>
+                                        <td><?php echo $data['tanggal']; ?></td>
+                                        <td><?php echo $data['lokasi']; ?></td>
+                                      
+                                        <td>
+                                            <?php echo $data['kode_barang']; ?><br>
+                                            <img src="data:image/png;base64,<?php echo $barcode; ?>" alt="Barcode">
+                                        </td>
+                                        
+                                    </tr>
+                                    <!-- Detail Modal -->
+                                    <div class="modal fade" id="detailModal<?php echo $modalId; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Detail Barang</h5>
                                                 </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <!-- Tambahkan tombol "Close" -->
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <div class="modal-body">
+                                                    <!-- Tampilkan gambar dari data BLOB -->
+                                                    <img src="data:image/jpeg;base64,<?php echo base64_encode($data['foto']); ?>" class="card-img-top" alt="Detail Aset">
+                                                    <div class="card-body">
+                                                        <h4 class="card-title"><?php echo $data['nama_barang']; ?></h4>
+                                                        <h5 class="card-text">Jumlah : <?php echo $data['jumlah']; ?></h5>
+                                                        <h5 class="card-text">Status : <?php echo $data['kondisi']; ?></h5>
+                                                        <h5 class="card-text">Lokasi : <?php echo $data['lokasi']; ?></h5>
+                                                        <p>Keterangan Status : <br> baik -> Barang tidak ada yang rusak <br> rusak ringan -> beberapa rusak <br> rusak parah -> kebanyakan rusak </p>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <!-- Tambahkan tombol "Close" -->
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            <?php
-                            }
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
-                <nav>
+                                <?php
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- <nav>
                     <ul class="pagination pagination-circle">
                         <?php
                         // Tombol Previous (Tidak ada perubahan)
@@ -370,80 +383,81 @@ $baseUrl = 'home.php?page=barang';
                         }
                         ?>
                     </ul>
-                </nav>
+                </nav> -->
+                </div>
             </div>
+
+
+
         </div>
 
-
-
-    </div>
-
-    <script>
-        function printContent(el) {
-            var restorepage = document.body.innerHTML;
-            var printcontent = document.getElementById(el).innerHTML;
-            document.body.innerHTML = printcontent;
-            window.print();
-            document.body.innerHTML = restorepage;
-        }
-    </script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('searchInput').addEventListener('input', filterTable);
-        document.getElementById('categoryFilter').addEventListener('change', filterTable);
-    });
-
-    
-
-    function scrollToTable(direction) {
-        const table = document.getElementById('dataTable1');
-        const rows = table.querySelectorAll('tbody tr');
-        let targetRow;
-
-        if (direction === 'down') {
-            for (let i = 0; i < rows.length; i++) {
-                if (rows[i].style.display !== 'none') {
-                    targetRow = rows[i];
-                    break;
-                }
+        <script>
+            function printContent(el) {
+                var restorepage = document.body.innerHTML;
+                var printcontent = document.getElementById(el).innerHTML;
+                document.body.innerHTML = printcontent;
+                window.print();
+                document.body.innerHTML = restorepage;
             }
-        } else {
-            for (let i = rows.length - 1; i >= 0; i--) {
-                if (rows[i].style.display !== 'none') {
-                    targetRow = rows[i];
-                    break;
-                }
-            }
-        }
-
-        if (targetRow) {
-            targetRow.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('searchInput').addEventListener('input', filterTable);
+                document.getElementById('categoryFilter').addEventListener('change', filterTable);
             });
-        }
-    }
-    function filterTable() {
-        const searchInput = document.getElementById('searchInput').value.toUpperCase();
-        const categoryFilter = document.getElementById('categoryFilter').value.toUpperCase();
-        const table = document.getElementById('dataTable1');
-        const tr = table.querySelectorAll('tbody tr');
 
-        for (let i = 0; i < tr.length; i++) {
-            let match = false;
-            const td = tr[i].getElementsByTagName('td');
-            for (let j = 0; j < td.length; j++) {
-                if (td[j]) {
-                    const textValue = td[j].innerText.toUpperCase();
-                    if (textValue.indexOf(searchInput) > -1 &&
-                        (categoryFilter === "" || (j === 2 && textValue === categoryFilter))) {
-                        match = true;
-                        break;
+
+
+            function scrollToTable(direction) {
+                const table = document.getElementById('dataTable1');
+                const rows = table.querySelectorAll('tbody tr');
+                let targetRow;
+
+                if (direction === 'down') {
+                    for (let i = 0; i < rows.length; i++) {
+                        if (rows[i].style.display !== 'none') {
+                            targetRow = rows[i];
+                            break;
+                        }
+                    }
+                } else {
+                    for (let i = rows.length - 1; i >= 0; i--) {
+                        if (rows[i].style.display !== 'none') {
+                            targetRow = rows[i];
+                            break;
+                        }
                     }
                 }
+
+                if (targetRow) {
+                    targetRow.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
             }
-            tr[i].style.display = match ? '' : 'none';
-        }
-    }
-</script>
-</body>
+
+            function filterTable() {
+                const searchInput = document.getElementById('searchInput').value.toUpperCase();
+                const categoryFilter = document.getElementById('categoryFilter').value.toUpperCase();
+                const table = document.getElementById('dataTable1');
+                const tr = table.querySelectorAll('tbody tr');
+
+                for (let i = 0; i < tr.length; i++) {
+                    let match = false;
+                    const td = tr[i].getElementsByTagName('td');
+                    for (let j = 0; j < td.length; j++) {
+                        if (td[j]) {
+                            const textValue = td[j].innerText.toUpperCase();
+                            if (textValue.indexOf(searchInput) > -1 &&
+                                (categoryFilter === "" || (j === 2 && textValue === categoryFilter))) {
+                                match = true;
+                                break;
+                            }
+                        }
+                    }
+                    tr[i].style.display = match ? '' : 'none';
+                }
+            }
+        </script>
+    </body>
