@@ -140,41 +140,32 @@ $baseUrl = 'index.php?page=kategori';
         }
 
         @media print {
-            body * {
-                visibility: hidden;
-            }
-
-            #printableArea,
-            #printableArea * {
-                visibility: visible;
-            }
-
-            #printableArea {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-            }
-
-            .btn,
-            .card-header a {
-                display: none;
-            }
+        body * {
+            visibility: hidden;
         }
+
+        .print-area,
+        .print-area * {
+            visibility: visible;
+        }
+
+        .print-area {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .btn,
+        .card-header a {
+            display: none;
+        }
+    }
     </style>
-    <script>
-        function printContent(el) {
-            var restorePage = document.body.innerHTML;
-            var printContent = document.getElementById(el).innerHTML;
-            document.body.innerHTML = printContent;
-            window.print();
-            document.body.innerHTML = restorePage;
-        }
-    </script>
+    
 </head>
 
 <body>
-    <div class="container-fluid">
+    <div class="container-fluid print-area">
         <!-- Page Heading -->
         <div class="text-center mb-4">
             <h1 class="h3 mb-2 text-gray-800">Kategori</h1>
@@ -184,9 +175,13 @@ $baseUrl = 'index.php?page=kategori';
         <div class="card shadow mb-4" id="printableArea">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Daftar Kategori</h6>
+                <button onclick="window.print();" class="btn btn-secondary">
+                <i class="fa fa-print"></i> Print
+            </button>
                 <button onclick="window.location.href='?page=tambah_kategori';" class="btn btn-secondary">
                 Tambah <i class="fas fa-plus"></i> 
                 </button>
+
             </div>
             <div class="card-body">
                 <div class="table-responsive">

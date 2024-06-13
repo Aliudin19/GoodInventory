@@ -1,6 +1,10 @@
 <?php
 
 include "koneksi.php";
+// if (!isset($_SESSION['user'])) {
+//     header('location:home.php');
+//     exit;
+// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -157,7 +161,7 @@ include "koneksi.php";
         <div class="dlabnav">
             <div class="dlabnav-scroll">
                 <ul class="metismenu" id="menu">
-                    <li><a class="" href="?page=home" aria-expanded="false">
+                    <li><a class="" href="?page=dashboard" aria-expanded="false">
                             <i class="fas fa-home"></i>
                             <span class="nav-text">Dashboard</span>
                         </a>
