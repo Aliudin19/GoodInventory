@@ -102,7 +102,7 @@
                     <div class="form-group row">
                         <div class="col-sm-10 offset-sm-2">
                             <button type="submit" name="submit" class="btn btn-primary">Simpan</button>
-                            <a href="?page=barang" class="btn btn-danger">Kembali</a>
+                            <a href="?page=total_barang" class="btn btn-danger">Kembali</a>
                         </div>
                     </div>
                 </form>
