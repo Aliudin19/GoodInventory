@@ -7,13 +7,29 @@ require 'vendor/autoload.php';
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Navbar with Login</title>
-    <!-- Favicon -->
-    <link rel="icon" href="img/logo.png" type="image/png">
-    <!-- Bootstrap CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="keywords" content="">
+	<meta name="author" content="">
+	<meta name="robots" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Fillow : Fillow Saas Admin  Bootstrap 5 Template">
+	<meta property="og:title" content="Fillow : Fillow Saas Admin  Bootstrap 5 Template">
+	<meta property="og:description" content="Fillow : Fillow Saas Admin  Bootstrap 5 Template">
+	<meta property="og:image" content="https://fillow.dexignlab.com/xhtml/social-image.png">
+	<meta name="format-detection" content="telephone=no">
+	
+	<!-- PAGE TITLE HERE -->
+	<title>Inventaris Sekolah</title>
+	
+	<!-- FAVICONS ICON -->
+	<link rel="icon" href="img/logo.png" type="image/png">
+    <!-- Datatable -->
+    <link href="vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+    <!-- Custom Stylesheet -->
+	<link href="vendor/jquery-nice-select/css/nice-select.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
     <style>
         .navbar-brand img {
             height: 30px;
@@ -70,35 +86,9 @@ require 'vendor/autoload.php';
         </div>
     </nav>
 
-
-
-
     <?php
-
-
     use Picqer\Barcode\BarcodeGeneratorPNG;
 
-    // Tentukan jumlah data per halaman
-    $limit = 10;
-
-
-    //LIMIT $limit OFFSET $offset
-    // Hitung offset (mulai data)
-    $currentPage = isset($_GET['pagenum']) ? intval($_GET['pagenum']) : 1;
-    $offset = ($currentPage - 1) * $limit;
-
-    // Hitung jumlah total data pada tabel barang
-    $queryTotal = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM barang");
-    $row = mysqli_fetch_assoc($queryTotal);
-    $totalRows = $row['total'];
-
-    // Hitung jumlah halaman
-    $totalPages = ceil($totalRows / $limit);
-
-    // Pastikan nomor halaman valid (minimal 1 dan maksimal total halaman)
-    $currentPage = max(1, min($currentPage, $totalPages));
-
-    // Ambil data sesuai dengan limit dan offset
     $query = mysqli_query($koneksi, "SELECT barang.*, kategori.nama_kategori FROM barang LEFT JOIN kategori ON barang.id_kategori = kategori.id_kategori ");
 
     // Penanganan Error (Opsional)
@@ -106,7 +96,6 @@ require 'vendor/autoload.php';
         die("Error dalam query: " . mysqli_error($koneksi));
     }
 
-    $baseUrl = 'home.php?page=barang';
 
     ?>
     <!DOCTYPE html>
@@ -251,48 +240,25 @@ require 'vendor/autoload.php';
 
 
     <body>
-        <div class="container-fluid print-area">
-            <!-- Page Heading -->
-            <div class="text-center mb-4">
-                <h1 class="h3 mb-2 text-gray-800">DAFTAR BARANG SMK FATAHILLAH</h1>
-                <hr>
-            </div>
-            <div class="row justify-content-center mb-3">
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <div class="text-center mb-4">
+            <h1 class="h3 mb-2 text-gray-800">DAFTAR BARANG SMK FATAHILLAH</h1>
+            <hr>
+        </div>
+        <div class="row justify-content-center mb-3">
 
 
-            </div>
-            <!-- DataTales Example -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Daftar Barang</h6>
-                    <div class="col-md-4">
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="searchInput" placeholder="Cari barang disini....">
-                            <button class="btn btn-light" type="button" onclick="scrollToTable('down')">
-                                <i class="bi bi-arrow-down"></i>
-                            </button>
-                        </div>
-
-                    </div>
-                    <div class="col-md-2">
-                        <select class="form-select" id="categoryFilter" onchange="filterTable()">
-                            <option value="">Semua Kategori</option>
-                            <?php
-                            $kategoriQuery = mysqli_query($koneksi, "SELECT * FROM kategori");
-                            while ($kategori = mysqli_fetch_array($kategoriQuery)) {
-                                echo "<option value='" . $kategori['nama_kategori'] . "'>" . $kategori['nama_kategori'] . "</option>";
-                            }
-                            ?>
-                        </select>
-                    </div>
-                    <button onclick="window.print();" class="btn btn-secondary">
-                        <i class="fas fa-print"></i> Print
-                    </button>
-
+        </div>
+        <!-- DataTales  -->
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Daftar Barang</h4>
                 </div>
-                <div class="card-body" id="printableArea">
+                <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
+                        <table id="example3" class="display" style="min-width: 845px">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -300,9 +266,9 @@ require 'vendor/autoload.php';
                                     <th>Kategori</th>
                                     <th>Jumlah</th>
                                     <th>Tanggal</th>
-                                    <th>lokasi</th>
+                                    <th>Detail</th>
                                     <th>Kode Barang & Barcode</th>
-
+                                    
                                 </tr>
                             </thead>
                             <tbody>
@@ -321,8 +287,12 @@ require 'vendor/autoload.php';
                                         <td><?php echo $data['nama_kategori']; ?></td>
                                         <td><?php echo $data['jumlah']; ?></td>
                                         <td><?php echo $data['tanggal']; ?></td>
-                                        <td><?php echo $data['lokasi']; ?></td>
-                                      
+                                        <td>
+                                            <a href="#" data-bs-toggle="modal" data-bs-target="#detailModal<?php echo $modalId; ?>">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+
+                                        </td>
                                         <td>
                                             <?php echo $data['kode_barang']; ?><br>
                                             <img src="data:image/png;base64,<?php echo $barcode; ?>" alt="Barcode">
@@ -361,35 +331,13 @@ require 'vendor/autoload.php';
                             </tbody>
                         </table>
                     </div>
-                    <!-- <nav>
-                    <ul class="pagination pagination-circle">
-                        <?php
-                        // Tombol Previous (Tidak ada perubahan)
-                        if ($currentPage > 1) {
-                            $prevPage = $currentPage - 1;
-                            echo "<li class='page-item page-indicator'><a class='page-link' href='{$baseUrl}&pagenum={$prevPage}'><i class='la la-angle-left'></i></a></li>";
-                        }
-
-                        // Tampilkan tautan halaman (Tidak ada perubahan)
-                        for ($i = 1; $i <= $totalPages; $i++) {
-                            $activeClass = ($currentPage == $i) ? 'active' : '';
-                            echo "<li class='page-item {$activeClass}'><a class='page-link' href='{$baseUrl}&pagenum={$i}'>{$i}</a></li>";
-                        }
-
-                        // Tombol Next (Tidak ada perubahan)
-                        if ($currentPage < $totalPages) {
-                            $nextPage = $currentPage + 1;
-                            echo "<li class='page-item page-indicator'><a class='page-link' href='{$baseUrl}&pagenum={$nextPage}'><i class='la la-angle-right'></i></a></li>";
-                        }
-                        ?>
-                    </ul>
-                </nav> -->
                 </div>
             </div>
-
-
-
         </div>
+
+
+
+    </div>
 
         <script>
             function printContent(el) {
@@ -460,4 +408,20 @@ require 'vendor/autoload.php';
                 }
             }
         </script>
+        <!-- Required vendors -->
+    <script src="vendor/global/global.min.js"></script>
+    <script src="vendor/chart.js/Chart.bundle.min.js"></script>
+	<!-- Apex Chart -->
+	<script src="vendor/apexchart/apexchart.js"></script>
+	
+    <!-- Datatable -->
+    <script src="vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="js/plugins-init/datatables.init.js"></script>
+
+	<script src="vendor/jquery-nice-select/js/jquery.nice-select.min.js"></script>
+
+    <script src="js/custom.min.js"></script>
+	<script src="js/dlabnav-init.js"></script>
+	<script src="js/demo.js"></script>
+    <script src="js/styleSwitcher.js"></script>
     </body>

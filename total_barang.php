@@ -4,28 +4,6 @@ require 'vendor/autoload.php';
 
 use Picqer\Barcode\BarcodeGeneratorPNG;
 
-// Tentukan jumlah data per halaman
-$limit = 10;
-// LIMIT $limit OFFSET $offset
-// Mengganti karakter yang tidak valid pada ID dengan karakter yang valid
-
-
-// Hitung offset (mulai data)
-$currentPage = isset($_GET['pagenum']) ? intval($_GET['pagenum']) : 1;
-$offset = ($currentPage - 1) * $limit;
-
-// Hitung jumlah total data pada tabel barang
-$queryTotal = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM barang");
-$row = mysqli_fetch_assoc($queryTotal);
-$totalRows = $row['total'];
-
-// Hitung jumlah halaman
-$totalPages = ceil($totalRows / $limit);
-
-// Pastikan nomor halaman valid (minimal 1 dan maksimal total halaman)
-$currentPage = max(1, min($currentPage, $totalPages));
-
-// Ambil data sesuai dengan limit dan offset
 $query = mysqli_query($koneksi, "SELECT barang.*, kategori.nama_kategori FROM barang LEFT JOIN kategori ON barang.id_kategori = kategori.id_kategori ");
 
 // Penanganan Error (Opsional)
@@ -33,146 +11,40 @@ if (!$query) {
     die("Error dalam query: " . mysqli_error($koneksi));
 }
 
-$baseUrl = 'index.php?page=total_barang';
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barang SMK FATAHILLAH</title>
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="keywords" content="">
+	<meta name="author" content="">
+	<meta name="robots" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Fillow : Fillow Saas Admin  Bootstrap 5 Template">
+	<meta property="og:title" content="Fillow : Fillow Saas Admin  Bootstrap 5 Template">
+	<meta property="og:description" content="Fillow : Fillow Saas Admin  Bootstrap 5 Template">
+	<meta property="og:image" content="https://fillow.dexignlab.com/xhtml/social-image.png">
+	<meta name="format-detection" content="telephone=no">
+	
+	<!-- PAGE TITLE HERE -->
+	<title>DAFTAR BARANG SMK FATAHILLAH</title>
+	
+	<!-- FAVICONS ICON -->
+	<link rel="shortcut icon" type="image/png" href="images/favicon.png">
+    <!-- Datatable -->
+    <link href="vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+    <!-- Custom Stylesheet -->
+	<link href="vendor/jquery-nice-select/css/nice-select.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
     <style>
-        .text-center {
-            margin-top: 50px;
-        }
-
         .text-center h1 {
             font-size: 36px;
             font-weight: bold;
             color: #333;
         }
-
-        .text-center hr {
-            border: 2px solid #333;
-            width: 50px;
-            margin: 20px auto;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .btn-primary {
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            text-align: center;
-            text-decoration: none;
-            color: white;
-            background-color: #007bff;
-            border: none;
-            border-radius: 5px;
-        }
-
-        .btn-secondary {
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            text-align: center;
-            text-decoration: none;
-            color: white;
-            background-color: #6c757d;
-            border: none;
-            border-radius: 5px;
-        }
-
-        .card {
-            margin: 0 2rem;
-            padding: 1rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-        }
-
-        .card-header h6 {
-            margin: 0;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .btn-primary,
-        .btn-secondary {
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            text-align: center;
-            text-decoration: none;
-            color: white;
-            background-color: #007bff;
-            border: none;
-            border-radius: 10px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th,
-        td {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #ddd;
-            vertical-align: middle;
-        }
-
-        th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-
-            #printableArea,
-            #printableArea * {
-                visibility: visible;
-            }
-
-            #printableArea {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-            }
-
-            .btn,
-            .card-header a {
-                display: none;
-            }
-        }
-
-        /* CSS for green border */
-        .input-group .form-control,
-        .input-group .form-select {
-            border: 2px solid lightgray;
-            border-radius: 5px;
-        }
     </style>
-
 </head>
 
 
@@ -187,141 +59,93 @@ $baseUrl = 'index.php?page=total_barang';
 
 
         </div>
-        <!-- DataTales Example -->
-        <div class="card shadow mb-4" id="printableArea">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Daftar Barang</h6>
-                <div class="col-md-4">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="searchInput" placeholder="Cari barang disini....">
-                        <button class="btn btn-light" type="button" onclick="scrollToTable('down')">
-                            <i class="bi bi-arrow-down"></i>
-                        </button>
-                    </div>
-
+        <!-- DataTales  -->
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Daftar Barang</h4>
                 </div>
-                <div class="col-md-2">
-                    <select class="form-select" id="categoryFilter" onchange="filterTable()">
-                        <option value="">Semua Kategori</option>
-                        <?php
-                        $kategoriQuery = mysqli_query($koneksi, "SELECT * FROM kategori");
-                        while ($kategori = mysqli_fetch_array($kategoriQuery)) {
-                            echo "<option value='" . $kategori['nama_kategori'] . "'>" . $kategori['nama_kategori'] . "</option>";
-                        }
-                        ?>
-                    </select>
-                </div>
-
-                <button onclick="printContent('printableArea')" class="btn btn-secondary">
-                    <i class="fas fa-print"></i> Print
-                </button>
-                <button onclick="window.location.href='?page=tambah_barang';" class="btn btn-secondary">
-                    Tambah <i class="fas fa-plus"></i>
-                </button>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Nama Barang</th>
-                                <th>Kategori</th>
-                                <th>Jumlah</th>
-                                <th>Tanggal</th>
-                                <th>Detail</th>
-                                <th>Kode Barang & Barcode</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            $i = 1 + $offset;
-                            while ($data = mysqli_fetch_array($query)) {
-                                $generator = new BarcodeGeneratorPNG();
-                                $barcode = base64_encode($generator->getBarcode($data['kode_barang'], $generator::TYPE_CODE_128));
-
-                                // Mengganti karakter yang tidak valid pada ID dengan karakter yang valid
-                                $modalId = str_replace('.', '-', $data['kode_barang']);
-                            ?>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="example3" class="display" style="min-width: 845px">
+                            <thead>
                                 <tr>
-                                    <td><?php echo $i++; ?></td>
-                                    <td><?php echo $data['nama_barang']; ?></td>
-                                    <td><?php echo $data['nama_kategori']; ?></td>
-                                    <td><?php echo $data['jumlah']; ?></td>
-                                    <td><?php echo $data['tanggal']; ?></td>
-                                    <td>
-                                        <a href="#" data-bs-toggle="modal" data-bs-target="#detailModal<?php echo $modalId; ?>">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-
-                                    </td>
-                                    <td>
-                                        <?php echo $data['kode_barang']; ?><br>
-                                        <img src="data:image/png;base64,<?php echo $barcode; ?>" alt="Barcode">
-                                    </td>
-                                    <td>
-                                        <?php if ($_SESSION['user']['role'] != 'pengunjung') { ?>
-                                            <a href="?page=edit_barang&&id=<?php echo $data['id_barang'] ?>" class="btn btn-info"><i class="fas fa-pencil-alt"></i></a>
-                                            <a onclick="return confirm('Yakin di Hapus nih? ');" href="?page=hapus_barang&&id=<?php echo $data['id_barang'] ?>" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
-                                        <?php } ?>
-                                    </td>
+                                    <th>No</th>
+                                    <th>Nama Barang</th>
+                                    <th>Kategori</th>
+                                    <th>Jumlah</th>
+                                    <th>Tanggal</th>
+                                    <th>Detail</th>
+                                    <th>Kode Barang & Barcode</th>
+                                    <th>Aksi</th>
                                 </tr>
-                                <!-- Detail Modal -->
-                                <div class="modal fade" id="detailModal<?php echo $modalId; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            </thead>
+                            <tbody>
+                                <?php
+                                $i = 1 + $offset;
+                                while ($data = mysqli_fetch_array($query)) {
+                                    $generator = new BarcodeGeneratorPNG();
+                                    $barcode = base64_encode($generator->getBarcode($data['kode_barang'], $generator::TYPE_CODE_128));
 
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Detail Barang</h5>
+                                    // Mengganti karakter yang tidak valid pada ID dengan karakter yang valid
+                                    $modalId = str_replace('.', '-', $data['kode_barang']);
+                                ?>
+                                    <tr>
+                                        <td><?php echo $i++; ?></td>
+                                        <td><?php echo $data['nama_barang']; ?></td>
+                                        <td><?php echo $data['nama_kategori']; ?></td>
+                                        <td><?php echo $data['jumlah']; ?></td>
+                                        <td><?php echo $data['tanggal']; ?></td>
+                                        <td>
+                                            <a href="#" data-bs-toggle="modal" data-bs-target="#detailModal<?php echo $modalId; ?>">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+
+                                        </td>
+                                        <td>
+                                            <?php echo $data['kode_barang']; ?><br>
+                                            <img src="data:image/png;base64,<?php echo $barcode; ?>" alt="Barcode">
+                                        </td>
+                                        <td>
+                                            <div class="d-flex">
+                                                <a href="?page=edit_barang&&id=<?php echo $data['id_barang'] ?>" class="btn btn-primary shadow btn-xs sharp me-1"><i class="fas fa-pencil-alt"></i></a>
+                                                <a onclick="return confirm('Yakin di Hapus nih? ');" href="?page=hapus_barang&&id=<?php echo $data['id_barang'] ?>" class="btn btn-danger shadow btn-xs sharp"><i class="fa fa-trash"></i></a>
                                             </div>
-                                            <div class="modal-body">
-                                                <!-- Tampilkan gambar dari data BLOB -->
-                                                <img src="data:image/jpeg;base64,<?php echo base64_encode($data['foto']); ?>" class="card-img-top" alt="Detail Aset">
-                                                <div class="card-body">
-                                                    <h4 class="card-title"><?php echo $data['nama_barang']; ?></h4>
-                                                    <h5 class="card-text">Jumlah : <?php echo $data['jumlah']; ?></h5>
-                                                    <h5 class="card-text">Status : <?php echo $data['kondisi']; ?></h5>
-                                                    <h5 class="card-text">Lokasi : <?php echo $data['lokasi']; ?></h5>
-                                                    <p>Keterangan Status : <br> baik -> Barang tidak ada yang rusak <br> rusak ringan -> beberapa rusak <br> rusak parah -> kebanyakan rusak </p>
+                                        </td>
+                                    </tr>
+                                    <!-- Detail Modal -->
+                                    <div class="modal fade" id="detailModal<?php echo $modalId; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Detail Barang</h5>
                                                 </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <!-- Tambahkan tombol "Close" -->
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <div class="modal-body">
+                                                    <!-- Tampilkan gambar dari data BLOB -->
+                                                    <img src="data:image/jpeg;base64,<?php echo base64_encode($data['foto']); ?>" class="card-img-top" alt="Detail Aset">
+                                                    <div class="card-body">
+                                                        <h4 class="card-title"><?php echo $data['nama_barang']; ?></h4>
+                                                        <h5 class="card-text">Jumlah : <?php echo $data['jumlah']; ?></h5>
+                                                        <h5 class="card-text">Status : <?php echo $data['kondisi']; ?></h5>
+                                                        <h5 class="card-text">Lokasi : <?php echo $data['lokasi']; ?></h5>
+                                                        <p>Keterangan Status : <br> baik -> Barang tidak ada yang rusak <br> rusak ringan -> beberapa rusak <br> rusak parah -> kebanyakan rusak </p>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <!-- Tambahkan tombol "Close" -->
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            <?php
-                            }
-                            ?>
-                        </tbody>
-                    </table>
+                                <?php
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <!-- <nav>
-                    <ul class="pagination pagination-circle">
-                        <?php
-                        // Tombol Previous (Tidak ada perubahan)
-                        if ($currentPage > 1) {
-                            $prevPage = $currentPage - 1;
-                            echo "<li class='page-item page-indicator'><a class='page-link' href='{$baseUrl}&pagenum={$prevPage}'><i class='la la-angle-left'></i></a></li>";
-                        }
-
-                        // Tampilkan tautan halaman (Tidak ada perubahan)
-                        for ($i = 1; $i <= $totalPages; $i++) {
-                            $activeClass = ($currentPage == $i) ? 'active' : '';
-                            echo "<li class='page-item {$activeClass}'><a class='page-link' href='{$baseUrl}&pagenum={$i}'>{$i}</a></li>";
-                        }
-
-                        // Tombol Next (Tidak ada perubahan)
-                        if ($currentPage < $totalPages) {
-                            $nextPage = $currentPage + 1;
-                            echo "<li class='page-item page-indicator'><a class='page-link' href='{$baseUrl}&pagenum={$nextPage}'><i class='la la-angle-right'></i></a></li>";
-                        }
-                        ?>
-                    </ul>
-                </nav> -->
             </div>
         </div>
 
@@ -396,6 +220,21 @@ $baseUrl = 'index.php?page=total_barang';
             }
         }
     </script>
+    <script src="vendor/global/global.min.js"></script>
+    <script src="vendor/chart.js/Chart.bundle.min.js"></script>
+    <!-- Apex Chart -->
+    <script src="vendor/apexchart/apexchart.js"></script>
+
+    <!-- Datatable -->
+    <script src="vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="js/plugins-init/datatables.init.js"></script>
+
+    <script src="vendor/jquery-nice-select/js/jquery.nice-select.min.js"></script>
+
+    <script src="js/custom.min.js"></script>
+    <script src="js/dlabnav-init.js"></script>
+    <script src="js/demo.js"></script>
+    <script src="js/styleSwitcher.js"></script>
 </body>
 
 </html>
