@@ -341,7 +341,7 @@ include "koneksi.php"
                                         <div class="media-body text-white text-end">
                                             <p class="mb-1">Total Barang</p>
                                             <h3 class="text-white">
-                                                <!-- <?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM barang")); ?> -->
+                                                <?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM barang")); ?>
                                             </h3>
                                         </div>
                                     </div>
@@ -360,7 +360,7 @@ include "koneksi.php"
                                         <div class="media-body text-white text-end">
                                             <p class="mb-1">Total Kategory</p>
                                             <h3 class="text-white">
-                                                <!-- <?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM kategori")); ?> -->
+                                                <?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM kategori")); ?>
                                             </h3>
                                         </div>
                                     </div>
@@ -368,64 +368,7 @@ include "koneksi.php"
                             </div>
                         </a>
                     </div>
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <a href="?page=RuangPenunjang" style="text-decoration: none; color: inherit;">
-                            <div class="widget-stat card bg-success">
-                                <div class="card-body p-4">
-                                    <div class="media">
-                                        <span class="me-3">
-                                            <i class="fas fa-place-of-worship fa-3x"></i>
-                                        </span>
-                                        <div class="media-body text-white text-end">
-                                            <p class="mb-1">Ruang Penunjang</p>
-                                            <h3 class="text-white">
-                                                <!-- <?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM penunjang")); ?> -->
-                                            </h3>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                <div class="row">
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <a href="?page=aset_sekolah" style="text-decoration: none; color: inherit;">
-                            <div class="widget-stat card bg-info">
-                                <div class="card-body p-4">
-                                    <div class="media">
-                                        <span class="me-3">
-                                            <i class="fas fa-archive fa-3x"></i>
-                                        </span>
-                                        <div class="media-body text-white text-end">
-                                            <p class="mb-1">Total Barang</p>
-                                            <h3 class="text-white">
-                                                <!-- <?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM barang")); ?> -->
-                                            </h3>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <a href="?page=Ruangpembelajaran" style="text-decoration: none; color: inherit;">
-                            <div class="widget-stat card bg-primary">
-                                <div class="card-body p-4">
-                                    <div class="media">
-                                        <span class="me-3">
-                                            <i class="fas fa-school fa-3x"></i>
-                                        </span>
-                                        <div class="media-body text-white text-end">
-                                            <p class="mb-1">Total Kategory</p>
-                                            <h3 class="text-white">
-                                                <!-- <?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM kategori")); ?> -->
-                                            </h3>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
+                    
 
 
 

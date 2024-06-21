@@ -17,32 +17,60 @@ if (!$query) {
 
 <head>
     <meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="keywords" content="">
-	<meta name="author" content="">
-	<meta name="robots" content="">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="Fillow : Fillow Saas Admin  Bootstrap 5 Template">
-	<meta property="og:title" content="Fillow : Fillow Saas Admin  Bootstrap 5 Template">
-	<meta property="og:description" content="Fillow : Fillow Saas Admin  Bootstrap 5 Template">
-	<meta property="og:image" content="https://fillow.dexignlab.com/xhtml/social-image.png">
-	<meta name="format-detection" content="telephone=no">
-	
-	<!-- PAGE TITLE HERE -->
-	<title>DAFTAR BARANG SMK FATAHILLAH</title>
-	
-	<!-- FAVICONS ICON -->
-	<link rel="shortcut icon" type="image/png" href="images/favicon.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+    <meta name="robots" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Fillow : Fillow Saas Admin  Bootstrap 5 Template">
+    <meta property="og:title" content="Fillow : Fillow Saas Admin  Bootstrap 5 Template">
+    <meta property="og:description" content="Fillow : Fillow Saas Admin  Bootstrap 5 Template">
+    <meta property="og:image" content="https://fillow.dexignlab.com/xhtml/social-image.png">
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- PAGE TITLE HERE -->
+    <title>DAFTAR BARANG SMK FATAHILLAH</title>
+
+    <!-- FAVICONS ICON -->
+    <link rel="shortcut icon" type="image/png" href="images/favicon.png">
     <!-- Datatable -->
     <link href="vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
     <!-- Custom Stylesheet -->
-	<link href="vendor/jquery-nice-select/css/nice-select.css" rel="stylesheet">
+    <link href="vendor/jquery-nice-select/css/nice-select.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <style>
         .text-center h1 {
             font-size: 36px;
             font-weight: bold;
             color: #333;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            .print-area,
+            .print-area * {
+                visibility: visible;
+            }
+
+            .print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+
+            .card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .card-header .btn {
+                display: none; /* Sembunyikan tombol Print saat mencetak */
+            }
         }
     </style>
 </head>
@@ -51,19 +79,22 @@ if (!$query) {
 <body>
     <div class="container-fluid">
         <!-- Page Heading -->
-        <div class="text-center mb-4">
+        <div class="text-center mb-4 print-area">
             <h1 class="h3 mb-2 text-gray-800">DAFTAR BARANG SMK FATAHILLAH</h1>
             <hr>
         </div>
-        <div class="row justify-content-center mb-3">
+        <div class="row justify-content-center mb-3 print-area">
 
 
         </div>
         <!-- DataTales  -->
         <div class="col-12">
-            <div class="card">
+            <div class="card print-area">
                 <div class="card-header">
                     <h4 class="card-title">Daftar Barang</h4>
+                    <button onclick="window.print();" class="btn btn-secondary">
+                        <i class="fas fa-print"></i> Print
+                    </button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -82,7 +113,7 @@ if (!$query) {
                             </thead>
                             <tbody>
                                 <?php
-                                $i = 1 + $offset;
+                                $i = 1;
                                 while ($data = mysqli_fetch_array($query)) {
                                     $generator = new BarcodeGeneratorPNG();
                                     $barcode = base64_encode($generator->getBarcode($data['kode_barang'], $generator::TYPE_CODE_128));

@@ -42,6 +42,7 @@ require 'vendor/autoload.php';
         }
 
         body {
+            /* background-image: url(img/fapic6.jpeg); */
             background-color: lightgoldenrodyellow;
             background-size: cover;
             background-position: center;
@@ -57,7 +58,7 @@ require 'vendor/autoload.php';
 
         .card {
             color: black;
-            background-color: 		#F5F5DC;
+            background-color: #F5F5DC;
             border-radius: 10px;
             transition: transform 0.3s ease;
             margin-bottom: 20px;
@@ -89,16 +90,14 @@ require 'vendor/autoload.php';
             color: #ffc107;
             /* Oranye */
         }
+
         .card-img {
             position: center;
         }
 
-        
-
         .card-custom {
-            margin: 0 auto;
-            float: none;
             margin-bottom: 20px;
+            /* Hapus float none dan margin */
         }
 
         .card-body-table {
@@ -112,13 +111,18 @@ require 'vendor/autoload.php';
         .container {
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             min-height: 100vh;
+            padding-top: 20px;
+            /* Menambah sedikit padding di atas untuk menghindari kartu menempel pada navbar */
+
         }
 
         .row {
             width: 100%;
+            justify-content: center;
+            /* Menengahkan elemen di dalam row */
         }
 
         .centered-img {
@@ -126,7 +130,26 @@ require 'vendor/autoload.php';
             height: auto;
             display: block;
         }
+
+        .welcome-card {
+            background-color: #F5F5DC;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .welcome-card img {
+            max-width: 100%;
+            height: 400px;
+            border-radius: 10px;
+            /* untuk sudut yang melengkung */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            /* efek bayangan */
+        }
     </style>
+    <!-- FontAwesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -155,113 +178,79 @@ require 'vendor/autoload.php';
         </div>
     </nav>
 
-    <div class="container mt-1">
-        <div class="row">
-            <div class="col-xl-8 mx-auto">
-                <div class="card card-custom">
-                    <img class="card-img-top centered-img" src="images/card/fatahillahBG.jpeg" alt="Card image cap">
-                    <div class="card-header">
-                        <h4 class="card-title">INVENTARIS SMK FATAHILLAH CILEUNGSI</h4>
+    <div class="container">
+        <div class="welcome-card">
+            <img src="img/fapic6.jpeg" alt="Selamat Datang" class="img-fluid mb-3">
+            <h4 class="mt-3">Selamat Datang Di Data Inventaris</h4>
+            <p>Anda bisa melihat data yang ada di sini.</p>
+        </div>
+
+
+        <div class="row justify-content-center">
+            <div class="col-xl-3 col-md-6 mb-4">
+                <a href="daftar_barang.php" style="text-decoration: none; color: inherit;">
+                    <div class="widget-stat card bg-info">
+                        <div class="card-body p-4">
+                            <div class="media">
+                                <span class="me-3">
+                                    <i class="fas fa-archive fa-3x"></i>
+                                </span>
+                                <div class="media-body text-white text-end">
+                                    <p class="mb-1">Total Barang</p>
+                                    <h3 class="text-white">
+                                        <?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM barang")); ?>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <p class="card-text text-dark">Selamat datang di halaman web Inventaris. Di sini Anda dapat melihat informasi terkait inventaris sekolah seperti jumlah Barang dan Jumlah kategori</p>
-                    </div>
-                </div>
+                </a>
             </div>
-            <div class="col-xl-12 card-body-table">
-                <div class="card">
-                    <div class="card-body">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <td>Total Kategori</td>
-                                    <td>Total Barang</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM kategori")); ?></td>
-                                    <td><?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM barang")); ?></td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <a href="kategori_barang.php" style="text-decoration: none; color: inherit;">
+                    <div class="widget-stat card bg-primary">
+                        <div class="card-body p-4">
+                            <div class="media">
+                                <span class="me-3">
+                                    <i class="fas fa-school fa-3x"></i>
+                                </span>
+                                <div class="media-body text-white text-end">
+                                    <p class="mb-1">Total Kategori</p>
+                                    <h3 class="text-white">
+                                        <?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM kategori")); ?>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </a>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <a style="text-decoration: none; color: inherit;">
+                    <div class="widget-stat card bg-success">
+                        <div class="card-body p-4">
+                            <div class="media">
+                                <span class="me-3">
+                                    <i class="fas fa-place-of-worship fa-3x"></i>
+                                </span>
+                                <div class="media-body text-white text-end">
+                                    <p class="mb-1">Total data</p>
+                                    <h3 class="text-white">
+                                        <?php echo mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM barang")) + mysqli_num_rows(mysqli_query($koneksi, "SELECT * FROM kategori")); ?>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
     </div>
 
+    <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <script>
-        function printContent(el) {
-            var restorepage = document.body.innerHTML;
-            var printcontent = document.getElementById(el).innerHTML;
-            document.body.innerHTML = printcontent;
-            window.print();
-            document.body.innerHTML = restorepage;
-        }
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('searchInput').addEventListener('input', filterTable);
-            document.getElementById('categoryFilter').addEventListener('change', filterTable);
-        });
-
-        function scrollToTable(direction) {
-            const table = document.getElementById('dataTable1');
-            const rows = table.querySelectorAll('tbody tr');
-            let targetRow;
-
-            if (direction === 'down') {
-                for (let i = 0; i < rows.length; i++) {
-                    if (rows[i].style.display !== 'none') {
-                        targetRow = rows[i];
-                        break;
-                    }
-                }
-            } else {
-                for (let i = rows.length - 1; i >= 0; i--) {
-                    if (rows[i].style.display !== 'none') {
-                        targetRow = rows[i];
-                        break;
-                    }
-                }
-            }
-
-            if (targetRow) {
-                targetRow.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        }
-
-        function filterTable() {
-            const searchInput = document.getElementById('searchInput').value.toUpperCase();
-            const categoryFilter = document.getElementById('categoryFilter').value.toUpperCase();
-            const table = document.getElementById('dataTable1');
-            const tr = table.querySelectorAll('tbody tr');
-
-            for (let i = 0; i < tr.length; i++) {
-                let match = false;
-                const td = tr[i].getElementsByTagName('td');
-                for (let j = 0; j < td.length; j++) {
-                    if (td[j]) {
-                        const textValue = td[j].innerText.toUpperCase();
-                        if (textValue.indexOf(searchInput) > -1 &&
-                            (categoryFilter === "" || (j === 2 && textValue === categoryFilter))) {
-                            match = true;
-                            break;
-                        }
-                    }
-                }
-                tr[i].style.display = match ? '' : 'none';
-            }
-        }
-    </script>
 </body>
 
 </html>
