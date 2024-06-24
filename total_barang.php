@@ -75,7 +75,6 @@ if (!$query) {
     </style>
 </head>
 
-
 <body>
     <div class="container-fluid">
         <!-- Page Heading -->
@@ -84,16 +83,14 @@ if (!$query) {
             <hr>
         </div>
         <div class="row justify-content-center mb-3 print-area">
-
-
         </div>
         <!-- DataTales  -->
         <div class="col-12">
             <div class="card print-area">
                 <div class="card-header">
                     <h4 class="card-title">Daftar Barang</h4>
-                    <button onclick="window.print();" class="btn btn-secondary">
-                        <i class="fas fa-print"></i> Print
+                    <button onclick="printSelected();" class="btn btn-secondary">
+                        <i class="fas fa-print"></i> Print Selected
                     </button>
                 </div>
                 <div class="card-body">
@@ -101,6 +98,7 @@ if (!$query) {
                         <table id="example3" class="display" style="min-width: 845px">
                             <thead>
                                 <tr>
+                                    <th>Pilih</th>
                                     <th>No</th>
                                     <th>Nama Barang</th>
                                     <th>Kategori</th>
@@ -122,6 +120,7 @@ if (!$query) {
                                     $modalId = str_replace('.', '-', $data['kode_barang']);
                                 ?>
                                     <tr>
+                                        <td><input type="checkbox" class="print-checkbox" value="<?php echo $data['id_barang']; ?>"></td>
                                         <td><?php echo $i++; ?></td>
                                         <td><?php echo $data['nama_barang']; ?></td>
                                         <td><?php echo $data['nama_kategori']; ?></td>
@@ -180,77 +179,48 @@ if (!$query) {
             </div>
         </div>
 
-
-
     </div>
 
     <script>
-        function printContent(el) {
-            var restorepage = document.body.innerHTML;
-            var printcontent = document.getElementById(el).innerHTML;
-            document.body.innerHTML = printcontent;
-            window.print();
-            document.body.innerHTML = restorepage;
-        }
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('searchInput').addEventListener('input', filterTable);
-            document.getElementById('categoryFilter').addEventListener('change', filterTable);
-        });
+        function printSelected() {
+            var checkboxes = document.querySelectorAll('.print-checkbox:checked');
+            var selectedRows = [];
 
-        function filterTable() {
-            const searchInput = document.getElementById('searchInput').value.toUpperCase();
-            const categoryFilter = document.getElementById('categoryFilter').value.toUpperCase();
-            const table = document.getElementById('dataTable1');
-            const tr = table.querySelectorAll('tbody tr');
+            checkboxes.forEach(function(checkbox) {
+                var row = checkbox.closest('tr');
+                selectedRows.push(row);
+            });
 
-            for (let i = 0; i < tr.length; i++) {
-                let match = false;
-                const td = tr[i].getElementsByTagName('td');
-                for (let j = 0; j < td.length; j++) {
-                    if (td[j]) {
-                        const textValue = td[j].innerText.toUpperCase();
-                        if (textValue.indexOf(searchInput) > -1 &&
-                            (categoryFilter === "" || (j === 2 && textValue === categoryFilter))) {
-                            match = true;
-                            break;
-                        }
-                    }
-                }
-                tr[i].style.display = match ? '' : 'none';
-            }
-        }
+            if (selectedRows.length > 0) {
+                var newWindow = window.open('', '', 'width=800,height=600');
+                newWindow.document.write('<html><head><title>Print Selected</title>');
+                newWindow.document.write('<style>body{font-family:Arial;}table{width:100%;border-collapse:collapse;}th,td{padding:10px;text-align:left;border:1px solid #ddd;}</style>');
+                newWindow.document.write('</head><body>');
+                newWindow.document.write('<h1>Selected Data</h1>');
+                newWindow.document.write('<table><thead><tr><th>No</th><th>Nama Barang</th><th>Kategori</th><th>Jumlah</th><th>Tanggal</th><th>Kode Barang & Barcode</th></tr></thead><tbody>');
 
-        function scrollToTable(direction) {
-            const table = document.getElementById('dataTable1');
-            const rows = table.querySelectorAll('tbody tr');
-            let targetRow;
-
-            if (direction === 'down') {
-                for (let i = 0; i < rows.length; i++) {
-                    if (rows[i].style.display !== 'none') {
-                        targetRow = rows[i];
-                        break;
-                    }
-                }
-            } else {
-                for (let i = rows.length - 1; i >= 0; i--) {
-                    if (rows[i].style.display !== 'none') {
-                        targetRow = rows[i];
-                        break;
-                    }
-                }
-            }
-
-            if (targetRow) {
-                targetRow.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
+                selectedRows.forEach(function(row, index) {
+                    var cells = row.cells;
+                    newWindow.document.write('<tr>');
+                    newWindow.document.write('<td>' + (index + 1) + '</td>');
+                    newWindow.document.write('<td>' + cells[2].innerText + '</td>');
+                    newWindow.document.write('<td>' + cells[3].innerText + '</td>');
+                    newWindow.document.write('<td>' + cells[4].innerText + '</td>');
+                    newWindow.document.write('<td>' + cells[5].innerText + '</td>');
+                    newWindow.document.write('<td>' + cells[7].innerHTML + '</td>');
+                    newWindow.document.write('</tr>');
                 });
+
+                newWindow.document.write('</tbody></table>');
+                newWindow.document.write('</body></html>');
+                newWindow.document.close();
+                newWindow.print();
+            } else {
+                alert('Pilih data yang ingin dicetak terlebih dahulu.');
             }
         }
     </script>
+
     <script src="vendor/global/global.min.js"></script>
     <script src="vendor/chart.js/Chart.bundle.min.js"></script>
     <!-- Apex Chart -->

@@ -8,10 +8,10 @@ use Picqer\Barcode\BarcodeGeneratorPNG;
 $limit = 10;
 
 // Hitung offset (mulai data)
-$currentPage = isset($_GET['pagenum']) ? intval($_GET['pagenum']) : 1; // Ganti 'page' menjadi 'pagenum'
+$currentPage = isset($_GET['pagenum']) ? intval($_GET['pagenum']) : 1;
 $offset = ($currentPage - 1) * $limit;
 
-// Hitung jumlah total data pada tabel olahraga
+// Hitung jumlah total data pada tabel kategori
 $queryTotal = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM kategori");
 $row = mysqli_fetch_assoc($queryTotal);
 $totalRows = $row['total'];
@@ -23,7 +23,7 @@ $totalPages = ceil($totalRows / $limit);
 $currentPage = max(1, min($currentPage, $totalPages));
 
 // Ambil data sesuai dengan limit dan offset
-$query = mysqli_query($koneksi, "SELECT * FROM kategori LIMIT $limit OFFSET $offset"); // Tambahkan LIMIT dan OFFSET
+$query = mysqli_query($koneksi, "SELECT * FROM kategori LIMIT $limit OFFSET $offset");
 
 // Penanganan Error (Opsional)
 if (!$query) {
@@ -31,7 +31,6 @@ if (!$query) {
 }
 
 $baseUrl = 'index.php?page=kategori';
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -140,28 +139,34 @@ $baseUrl = 'index.php?page=kategori';
         }
 
         @media print {
-        body * {
-            visibility: hidden;
-        }
+            body * {
+                visibility: hidden;
+            }
 
-        .print-area,
-        .print-area * {
-            visibility: visible;
-        }
+            .print-area,
+            .print-area * {
+                visibility: visible;
+            }
 
-        .print-area {
-            position: absolute;
-            left: 0;
-            top: 0;
-        }
+            .print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
 
-        .btn,
-        .card-header a {
-            display: none;
+            .btn,
+            .card-header a {
+                display: none;
+            }
         }
-    }
     </style>
-    
+    <script>
+        function confirmDelete(id_kategori) {
+            if (confirm("Apakah Anda yakin ingin menghapus kategori ini?")) {
+                window.location.href = 'hapus_kategori.php?id_kategori=' + id_kategori;
+            }
+        }
+    </script>
 </head>
 
 <body>
@@ -176,12 +181,11 @@ $baseUrl = 'index.php?page=kategori';
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Daftar Kategori</h6>
                 <button onclick="window.print();" class="btn btn-secondary">
-                <i class="fa fa-print"></i> Print
-            </button>
-                <button onclick="window.location.href='?page=tambah_kategori';" class="btn btn-secondary">
-                Tambah <i class="fas fa-plus"></i> 
+                    <i class="fa fa-print"></i> Print
                 </button>
-
+                <button onclick="window.location.href='?page=tambah_kategori';" class="btn btn-secondary">
+                    Tambah <i class="fas fa-plus"></i>
+                </button>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -198,16 +202,15 @@ $baseUrl = 'index.php?page=kategori';
                             $i = 1 + $offset; // Mulai nomor urut dari offset + 1
                             while ($data = mysqli_fetch_array($query)) {
                             ?>
-                            <tr>
-                                <td><?php echo $i++; ?></td>
-                                <td><?php echo $data['nama_kategori']; ?></td>
-                                <td>
-                                <a onclick="return confirm('Yakin di Hapus nih? ');" href="?page=hapus_kategori&&id=<?php echo $data['id_kategori'] ?>" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td><?php echo $i++; ?></td>
+                                    <td><?php echo $data['nama_kategori']; ?></td>
+                                    <td>
+                                        <a onclick="confirmDelete(<?php echo $data['id_kategori']; ?>)" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
 
-                            
-                            <?php 
+                                    </td>
+                                </tr>
+                            <?php
                             }
                             ?>
                         </tbody>
